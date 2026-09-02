@@ -3,14 +3,14 @@ kind: Asset
 type: agent
 
 metadata:
-  name: ais-vessel-tracking-agent
+  name: ad-ais-vessel-tracking-agent
   version: "1.0.0"
 
 provides:
   apis:
-    - name: ais-vessel-tracking-agent
+    - name: ad-ais-vessel-tracking-agent
       kind: a2a
-      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-ais-vessel-tracking-agent:v1
       description: "Fetches live AIS vessel position, speed, and heading from AISStream.io and computes predicted ETA to the nomination destination port."
 
 container:

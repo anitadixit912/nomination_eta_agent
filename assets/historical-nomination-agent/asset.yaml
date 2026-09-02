@@ -3,14 +3,14 @@ kind: Asset
 type: agent
 
 metadata:
-  name: historical-nomination-agent
+  name: ad-historical-nomination-agent
   version: "1.0.0"
 
 provides:
   apis:
-    - name: historical-nomination-agent
+    - name: ad-historical-nomination-agent
       kind: a2a
-      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-historical-nomination-agent:v1
       description: "Analyses historical nomination records in OGS/650 to extract voyage patterns, average lead times, and seasonal trends for a given material, route, and transport system."
 
 container:

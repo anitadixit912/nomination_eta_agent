@@ -1,5 +1,5 @@
 {
-  "xsappname": "nomination-eta-cap",
+  "xsappname": "nomination-eta-new-cap",
   "tenant-mode": "dedicated",
   "description": "Nomination ETA Agent security descriptor",
   "scopes": [

@@ -3,14 +3,14 @@ kind: Asset
 type: agent
 
 metadata:
-  name: nomination-eta-agent
+  name: ad-nomination-eta-agent
   version: "1.0.0"
 
 provides:
   apis:
-    - name: nomination-eta-agent
+    - name: ad-nomination-eta-agent
       kind: a2a
-      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-nomination-eta-agent:v1
       description: "ETA Orchestrator Agent. Coordinates three specialist agents (historical, AIS, geo-weather) to produce a weighted ETA proposal for a cargo nomination. Manages the human-in-the-loop approve/reject/reassess workflow and writes approved ETAs back to OGS/650 via the CAP service."
 
 container:
@@ -37,15 +37,15 @@ container:
       value: "APAC_DEV10"
 
 requires:
-  - name: historical-nomination-agent
+  - name: ad-historical-nomination-agent
     kind: agent
-    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1
-  - name: ais-vessel-tracking-agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-historical-nomination-agent:v1
+  - name: ad-ais-vessel-tracking-agent
     kind: agent
-    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1
-  - name: geo-weather-agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-ais-vessel-tracking-agent:v1
+  - name: ad-geo-weather-agent
     kind: agent
-    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-geo-weather-agent:v1
 
 probes:
   startup:

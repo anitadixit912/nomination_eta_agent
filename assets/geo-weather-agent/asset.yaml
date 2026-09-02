@@ -3,14 +3,14 @@ kind: Asset
 type: agent
 
 metadata:
-  name: geo-weather-agent
+  name: ad-geo-weather-agent
   version: "1.0.0"
 
 provides:
   apis:
-    - name: geo-weather-agent
+    - name: ad-geo-weather-agent
       kind: a2a
-      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ad-geo-weather-agent:v1
       description: "Assesses geopolitical risk (ACLED) and weather conditions (Open-Meteo) along a shipping route, and checks port disruption signals (PortWatch IMF). Returns a risk score and estimated delay days."
 
 container:
