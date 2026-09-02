@@ -10,7 +10,7 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npm ci --cache /home/user/.npm-cache --logs-dir /home/user/.npm-logs
+        - npm install
         - npm run build --workspace=app/react-ui
         - npx cds build --production
 
