@@ -1,0 +1,34 @@
+{
+  "name": "nomination-eta-cap",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cap-js/hana": "^3",
+    "@sap/cds": "^10",
+    "@sap/xssec": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^3"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "build": "npm run build --workspace=app/react-ui && cds build --production",
+    "test": "c8 --reporter=json node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/test-report-reporter.mjs --test-reporter-destination=stdout 'test/**/*.test.js' && node ./scripts/write-test-report.mjs"
+  },
+  "private": true,
+  "cds": {
+    "[development]": {
+      "requires": {
+        "auth": "dummy"
+      }
+    },
+    "[production]": {
+      "folders": {
+        "app": "app/react-ui/dist"
+      }
+    }
+  },
+  "workspaces": [
+    "app/react-ui"
+  ]
+}

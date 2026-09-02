@@ -1,0 +1,30 @@
+{
+  "Strait of Hormuz": {
+    "bbox": [[25.0, 56.0], [27.0, 60.0]],
+    "description": "Critical oil chokepoint between Persian Gulf and Gulf of Oman"
+  },
+  "Suez Canal": {
+    "bbox": [[29.9, 32.5], [31.3, 32.7]],
+    "description": "Key transit route between Red Sea and Mediterranean"
+  },
+  "Red Sea": {
+    "bbox": [[12.0, 43.0], [30.0, 45.0]],
+    "description": "Red Sea shipping lane — Bab el-Mandeb and Houthi risk zone"
+  },
+  "Bosphorus": {
+    "bbox": [[41.0, 28.9], [41.3, 29.2]],
+    "description": "Turkey strait connecting Black Sea to Mediterranean"
+  },
+  "Strait of Malacca": {
+    "bbox": [[1.0, 103.0], [6.0, 105.0]],
+    "description": "Critical Asia–Europe shipping chokepoint"
+  },
+  "Gulf of Mexico": {
+    "bbox": [[18.0, -98.0], [30.0, -82.0]],
+    "description": "US Gulf Coast oil terminals and hurricane risk zone"
+  },
+  "Gulf of Guinea": {
+    "bbox": [[1.0, -5.0], [10.0, 10.0]],
+    "description": "West Africa offshore piracy risk zone"
+  }
+}

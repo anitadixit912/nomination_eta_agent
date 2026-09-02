@@ -1,0 +1,42 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: agent
+
+metadata:
+  name: geo-weather-agent
+  version: "1.0.0"
+
+provides:
+  apis:
+    - name: geo-weather-agent
+      kind: a2a
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1
+      description: "Assesses geopolitical risk (ACLED) and weather conditions (Open-Meteo) along a shipping route, and checks port disruption signals (PortWatch IMF). Returns a risk score and estimated delay days."
+
+container:
+  buildPath: .
+  port: 5000
+  env:
+    - name: ACLED_API_KEY
+      value: ""
+    - name: ACLED_EMAIL
+      value: ""
+
+probes:
+  startup:
+    path: /.well-known/agent.json
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 18
+  liveness:
+    path: /.well-known/agent.json
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    path: /.well-known/agent.json
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3

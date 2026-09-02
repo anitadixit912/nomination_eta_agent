@@ -1,0 +1,40 @@
+{
+  "mcpTranslationVersion": "0.6",
+  "target": {
+    "ordId": "sap.sf:apiResource:SCMNominationService:v1",
+    "type": "edmx"
+  },
+  "serverInfo": {
+    "name": "sap.mcp/nominationservice_svc",
+    "title": "nominationservice_svc",
+    "version": "1.0.0",
+    "description": "MCP server for the nominationservice_svc service."
+  },
+  "tools": [
+    {
+      "name": "get_metadata_nominationservice_svc",
+      "title": "get_metadata_nominationservice_svc",
+      "description": "Get metadata of the OData service with optional filtering to reduce token consumption."
+    },
+    {
+      "name": "batch_for_nominationservice_svc",
+      "title": "batch_for_nominationservice_svc",
+      "description": "Execute multiple OData operations in a single batch request using the $batch endpoint."
+    },
+    {
+      "name": "action_refreshmetadata_for_nominationservice_svc",
+      "title": "action_refreshMetadata_for_nominationservice_svc",
+      "description": "OData action: refreshMetadata in the nominationservice_svc service"
+    },
+    {
+      "name": "action_upsertnomination_for_nominationservice_svc",
+      "title": "action_upsertNomination_for_nominationservice_svc",
+      "description": "OData action: upsertNomination in the nominationservice_svc service."
+    },
+    {
+      "name": "action_deletenomination_for_nominationservice_svc",
+      "title": "action_deleteNomination_for_nominationservice_svc",
+      "description": "OData action: deleteNomination in the nominationservice_svc service."
+    }
+  ]
+}

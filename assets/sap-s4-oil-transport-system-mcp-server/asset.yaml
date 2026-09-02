@@ -1,0 +1,20 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: mcp-server
+
+metadata:
+  name: sap-s4-oil-transport-system-mcp-server
+  version: "1.0.0"
+  translation: mcp-translation/translation.json
+  apiSpec: mcp-translation/api-spec.edmx
+
+provides:
+  apis:
+    - name: sap-s4-oil-transport-system-mcp-server
+      kind: mcp-server
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.sap-s4-oil-transport-system-mcp-server:v1
+
+requires:
+  - name: OP_OIL_TRANSPORTSYSTEM_0001
+    kind: api
+    ordId: sap.s4:apiResource:OP_OIL_TRANSPORTSYSTEM_0001:v1

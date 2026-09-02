@@ -1,0 +1,107 @@
+_schema-version: "3.1"
+ID: nomination-eta-cap
+version: 1.0.0
+description: "Nomination ETA Agent — CAP backend + React UI"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci --cache /home/user/.npm-cache --logs-dir /home/user/.npm-logs
+        - npm run build --workspace=app/react-ui
+        - npx cds build --production
+
+modules:
+
+  # ── CAP Node.js Server ─────────────────────────────────────
+  - name: nomination-eta-cap-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    build-parameters:
+      builder: npm
+      ignore:
+        - .env
+        - node_modules/
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: nomination-eta-hdi
+      - name: nomination-eta-xsuaa
+      - name: nomination-eta-destination
+      - name: nomination-eta-connectivity
+    properties:
+      OGS_BASE_URL: "http://10.236.250.15:8001"
+      OGS_USER: "i336812"
+      CC_PROXY_HOST: "connectivityproxy.internal.cf.us10.hana.ondemand.com"
+      CC_PROXY_PORT: "20003"
+      CC_LOCATION_ID: "APAC_DEV10"
+
+  # ── HDI DB Deployer ────────────────────────────────────────
+  - name: nomination-eta-cap-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+      ignore:
+        - .env
+        - node_modules/
+    requires:
+      - name: nomination-eta-hdi
+
+  # ── React UI (served as static files via approuter) ────────
+  - name: nomination-eta-cap-ui
+    type: html5
+    path: app/react-ui/dist
+    build-parameters:
+      builder: custom
+      commands: []
+      supported-platforms: []
+    requires:
+      - name: nomination-eta-xsuaa
+
+resources:
+
+  # ── SAP HANA HDI Container ─────────────────────────────────
+  - name: nomination-eta-hdi
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # ── XSUAA (Authentication) ─────────────────────────────────
+  - name: nomination-eta-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: nomination-eta-cap-${org}-${space}
+        tenant-mode: dedicated
+
+  # ── Destination Service ────────────────────────────────────
+  - name: nomination-eta-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+
+  # ── Connectivity Service (Cloud Connector tunnel) ──────────
+  - name: nomination-eta-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite

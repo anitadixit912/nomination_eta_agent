@@ -1,0 +1,71 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: cap-app
+
+metadata:
+  name: nomination-eta-cap
+  version: "1.0.0"
+
+provides:
+  protocols:
+    - odata-v4
+    - rest
+
+components:
+  - name: srv
+    type: srv
+    buildPath: .
+    port: 4004
+    provides:
+      endpoints:
+        - path: /odata/v4
+          port: 4004
+          protocol: http
+        - path: /api
+          port: 4004
+          protocol: http
+      protocols:
+        - odata-v4
+        - rest
+    requires:
+      - name: hdi-container
+        kind: platform-service
+        service: hana-cloud
+        plan: hdi-shared
+
+  - name: hdi-deployer
+    type: hdi-deployer
+    buildPath: .
+    requires:
+      - name: hdi-container
+        kind: platform-service
+        service: hana-cloud
+        plan: hdi-shared
+    custom:
+      lifecycle: init
+
+requires:
+  - name: destination
+    kind: platform-service
+    service: destination
+    plan: lite
+  - name: connectivity
+    kind: platform-service
+    service: connectivity
+    plan: lite
+  - name: xsuaa
+    kind: platform-service
+    service: xsuaa
+    plan: application
+    parameters:
+      xsappname: nomination-eta-cap
+      tenant-mode: dedicated
+
+custom:
+  cap:
+    env:
+      OGS_BASE_URL: "http://10.236.250.15:8001"
+      OGS_USER: "i336812"
+      CC_PROXY_HOST: "connectivityproxy.internal.cf.us10.hana.ondemand.com"
+      CC_PROXY_PORT: "20003"
+      CC_LOCATION_ID: "APAC_DEV10"

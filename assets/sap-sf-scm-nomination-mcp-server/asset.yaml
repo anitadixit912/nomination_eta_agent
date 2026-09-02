@@ -1,0 +1,20 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: mcp-server
+
+metadata:
+  name: sap-sf-scm-nomination-mcp-server
+  version: "1.0.0"
+  translation: mcp-translation/translation.json
+  apiSpec: mcp-translation/api-spec.edmx
+
+provides:
+  apis:
+    - name: sap-sf-scm-nomination-mcp-server
+      kind: mcp-server
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.sap-sf-scm-nomination-mcp-server:v1
+
+requires:
+  - name: SCMNominationService
+    kind: api
+    ordId: sap.sf:apiResource:SCMNominationService:v1

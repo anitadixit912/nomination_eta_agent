@@ -1,0 +1,29 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: n8n-workflow
+
+metadata:
+  name: n8n
+  version: "1.0.0"
+
+sourceRoot: "workflows"
+
+requires:
+  - name: nomination-eta-agent
+    kind: agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1
+  - name: ais-vessel-tracking-agent
+    kind: agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1
+
+provides:
+  workflows:
+    - definitionFile: nomination-created-trigger.n8n.json
+      name: nomination-created-trigger
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-created-trigger:v1
+    - definitionFile: vessel-deviation-monitor.n8n.json
+      name: vessel-deviation-monitor
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.vessel-deviation-monitor:v1
+    - definitionFile: refresh-eta-on-demand.n8n.json
+      name: refresh-eta-on-demand
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.refresh-eta-on-demand:v1

@@ -1,0 +1,4 @@
+node_modules/
+app/react-ui/node_modules/
+.env
+*.log

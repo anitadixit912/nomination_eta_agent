@@ -1,0 +1,160 @@
+{
+  "name": "Vessel Deviation Monitor",
+  "description": "Runs every 6 hours. Fetches all approved nominations from the CAP service, iterates over each one, calls the AIS Vessel Tracking Agent to check for significant vessel deviation from the expected path, and — when a deviation is detected — triggers a fresh ETA re-analysis in the CAP service and writes a deviation_flagged audit log entry. This implements the continuous vessel monitoring requirement (REQ-05, M7).",
+  "nodes": [
+    {
+      "id": "node-schedule",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 */6 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node-fetch-nominations",
+      "name": "Fetch Approved Nominations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [480, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "https://nomination-eta-cap.company.com/nomination-eta-service/NominationETA?$filter=status eq 'approved' or status eq 'written_back'&$select=ID,nominationId,vesselMMSI,vesselName,approvedETA,destination,material,transportSystem",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-split",
+      "name": "Loop Over Nominations",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [720, 300],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "node-check-ais",
+      "name": "Check AIS Agent for Deviation",
+      "type": "CUSTOM.sapAgent",
+      "typeVersion": 1,
+      "position": [960, 300],
+      "parameters": {
+        "agentName": "{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1\",\"name\":\"AIS Vessel Tracking Agent\"}",
+        "agents": "[{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1\",\"name\":\"Historical Nomination Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1\",\"name\":\"AIS Vessel Tracking Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1\",\"name\":\"Geo Weather Agent\"}]",
+        "chatInput": "=Check for significant vessel deviation. vessel_mmsi={{ $json.vesselMMSI }}, nomination_id={{ $json.nominationId }}, approved_eta={{ $json.approvedETA }}, destination={{ $json.destination }}. If the vessel has deviated significantly (speed drop >20%, unexpected heading change, or ETA has shifted by more than 12 hours), return JSON with deviation_detected=true and deviation_detail. Otherwise return deviation_detected=false.",
+        "sessionId": "=deviation-{{ $json.nominationId }}",
+        "blocking": true,
+        "additionalOptions": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "id": "node-if-deviation",
+      "name": "Significant Deviation?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [1200, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "deviation-check",
+              "leftValue": "={{ $json.deviation_detected }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-trigger-reanalysis",
+      "name": "Trigger ETA Re-Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [1440, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://nomination-eta-cap.company.com/api/nominations/{{ $('Loop Over Nominations').item.json.nominationId }}/refresh",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ reason: 'vessel_deviation', deviation_detail: $json.deviation_detail || 'Significant deviation detected by AIS monitoring' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-write-audit",
+      "name": "Write Deviation Audit Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [1680, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "https://nomination-eta-cap.company.com/api/audit",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ nominationId: $('Loop Over Nominations').item.json.nominationId, eventType: 'deviation_flagged', etaValue: $('Loop Over Nominations').item.json.approvedETA, decisionMaker: 'system', agentReasoning: $('Check AIS Agent for Deviation').item.json.deviation_detail || 'Vessel deviation detected — ETA re-analysis triggered', sourceAgents: 'ais-vessel-tracking-agent' }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [{ "node": "Fetch Approved Nominations", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Approved Nominations": {
+      "main": [
+        [{ "node": "Loop Over Nominations", "type": "main", "index": 0 }]
+      ]
+    },
+    "Loop Over Nominations": {
+      "main": [
+        [{ "node": "Check AIS Agent for Deviation", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check AIS Agent for Deviation": {
+      "main": [
+        [{ "node": "Significant Deviation?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Significant Deviation?": {
+      "main": [
+        [{ "node": "Trigger ETA Re-Analysis", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Trigger ETA Re-Analysis": {
+      "main": [
+        [{ "node": "Write Deviation Audit Log", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

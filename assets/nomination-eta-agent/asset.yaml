@@ -1,0 +1,67 @@
+apiVersion: asset.sap/v1
+kind: Asset
+type: agent
+
+metadata:
+  name: nomination-eta-agent
+  version: "1.0.0"
+
+provides:
+  apis:
+    - name: nomination-eta-agent
+      kind: a2a
+      ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1
+      description: "ETA Orchestrator Agent. Coordinates three specialist agents (historical, AIS, geo-weather) to produce a weighted ETA proposal for a cargo nomination. Manages the human-in-the-loop approve/reject/reassess workflow and writes approved ETAs back to OGS/650 via the CAP service."
+
+container:
+  buildPath: .
+  port: 5000
+  env:
+    - name: HISTORICAL_AGENT_URL
+      value: "http://historical-nomination-agent:5000"
+    - name: AIS_AGENT_URL
+      value: "http://ais-vessel-tracking-agent:5000"
+    - name: GEO_WEATHER_AGENT_URL
+      value: "http://geo-weather-agent:5000"
+    - name: CAP_SERVICE_URL
+      value: "http://nomination-eta-cap:4004"
+    - name: OGS_BASE_URL
+      value: "http://10.236.250.15:8001"
+    - name: OGS_USER
+      value: "i336812"
+    - name: OGS_PASSWORD
+      value: ""
+    - name: CONNECTIVITY_PROXY
+      value: "connectivityproxy.internal.cf.us10.hana.ondemand.com:20003"
+    - name: CLOUD_CONNECTOR_LOCATION_ID
+      value: "APAC_DEV10"
+
+requires:
+  - name: historical-nomination-agent
+    kind: agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1
+  - name: ais-vessel-tracking-agent
+    kind: agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1
+  - name: geo-weather-agent
+    kind: agent
+    ordId: customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1
+
+probes:
+  startup:
+    path: /.well-known/agent.json
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 18
+  liveness:
+    path: /.well-known/agent.json
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    path: /.well-known/agent.json
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3

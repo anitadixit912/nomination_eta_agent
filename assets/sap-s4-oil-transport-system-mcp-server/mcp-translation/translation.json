@@ -1,0 +1,40 @@
+{
+  "mcpTranslationVersion": "0.6",
+  "target": {
+    "ordId": "sap.s4:apiResource:OP_OIL_TRANSPORTSYSTEM_0001:v1",
+    "type": "edmx"
+  },
+  "serverInfo": {
+    "name": "sap.mcp/sap_self",
+    "title": "sap_self",
+    "version": "1.0.0",
+    "description": "MCP server for the SAP OIL Transport System service."
+  },
+  "tools": [
+    {
+      "name": "get_metadata_sap_self",
+      "title": "get_metadata_sap_self",
+      "description": "Get metadata of the OData service."
+    },
+    {
+      "name": "list_transportsystem_for_sap_self",
+      "title": "list_TransportSystem_for_sap_self",
+      "description": "Retrieve a list of TransportSystem entities."
+    },
+    {
+      "name": "get_transportsystem_for_sap_self",
+      "title": "get_TransportSystem_for_sap_self",
+      "description": "Retrieve a single TransportSystem entity by key."
+    },
+    {
+      "name": "list_locationassignment_for_sap_self",
+      "title": "list_LocationAssignment_for_sap_self",
+      "description": "Retrieve a list of LocationAssignment entities."
+    },
+    {
+      "name": "list_plannedmaterials_for_sap_self",
+      "title": "list_PlannedMaterials_for_sap_self",
+      "description": "Retrieve a list of PlannedMaterials entities."
+    }
+  ]
+}

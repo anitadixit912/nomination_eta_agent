@@ -1,0 +1,17 @@
+apiVersion: solution.sap/v1
+kind: Solution
+
+metadata:
+  name: nomination-eta-agent-9bb0c
+  version: "1.0.0"
+  description: "Multi-agent AI system for oil and gas nomination ETA prediction with human-in-the-loop approval, combining live AIS vessel tracking, geopolitical/weather risk, and historical voyage patterns."
+
+assets:
+  - ref: ./assets/historical-nomination-agent/asset.yaml
+  - ref: ./assets/ais-vessel-tracking-agent/asset.yaml
+  - ref: ./assets/geo-weather-agent/asset.yaml
+  - ref: ./assets/nomination-eta-agent/asset.yaml
+  - ref: ./assets/nomination-eta-cap/asset.yaml
+  - ref: ./assets/n8n/asset.yaml
+  - ref: ./assets/sap-sf-scm-nomination-mcp-server/asset.yaml
+  - ref: ./assets/sap-s4-oil-transport-system-mcp-server/asset.yaml

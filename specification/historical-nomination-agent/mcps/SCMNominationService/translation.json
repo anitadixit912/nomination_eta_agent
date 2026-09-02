@@ -1,0 +1,336 @@
+{
+  "mcpTranslationVersion": "0.6",
+  "target": {
+    "ordId": "sap.sf:apiResource:SCMNominationService:v1",
+    "type": "edmx"
+  },
+  "serverInfo": {
+    "name": "sap.mcp/nominationservice_svc",
+    "title": "nominationservice_svc",
+    "version": "1.0.0",
+    "description": "MCP server for the nominationservice_svc service."
+  },
+  "tools": [
+    {
+      "name": "get_metadata_nominationservice_svc",
+      "title": "get_metadata_nominationservice_svc",
+      "description": "Get metadata of the OData service with optional filtering to reduce token consumption.\nReturns the metadata in XML format, which can be used to discover available entities and their properties.\nCall this endpoint every time before you call other tools to ensure understanding of the schema.\nBased on the metadata, you can dynamically create an OData request.\n\nUse filtering parameters to get specific metadata sections. Without parameters, this tool returns the complete XML metadata (which might be huge).\nOnly use the specified enum values for the filtering parameters.\n",
+      "odataType": {
+        "metadataRequest": {},
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "batch_for_nominationservice_svc",
+      "title": "batch_for_nominationservice_svc",
+      "description": "Execute multiple OData operations in a single batch request using the $batch endpoint. This allows you to combine multiple tool calls into one HTTP request, improving efficiency when performing multiple operations.",
+      "odataType": {
+        "batchRequest": {},
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "action_refreshmetadata_for_nominationservice_svc",
+      "title": "action_refreshMetadata_for_nominationservice_svc",
+      "description": "OData action: refreshMetadata in the nominationservice_svc service",
+      "odataType": {
+        "operation": {
+          "name": "refreshMetadata",
+          "type": "action",
+          "parameters": []
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "action_upsertnomination_for_nominationservice_svc",
+      "title": "action_upsertNomination_for_nominationservice_svc",
+      "description": "OData action: upsertNomination in the nominationservice_svc service. Returns: NominationService.svc.nominationActionResponse",
+      "odataType": {
+        "operation": {
+          "name": "upsertNomination",
+          "type": "action",
+          "parameters": [
+            {
+              "name": "nominationTarget",
+              "newParameterName": "nominationtarget"
+            },
+            {
+              "name": "userId",
+              "newParameterName": "userid"
+            },
+            {
+              "name": "readiness",
+              "newParameterName": "readiness"
+            },
+            {
+              "name": "rank",
+              "newParameterName": "rank"
+            },
+            {
+              "name": "note",
+              "newParameterName": "note"
+            },
+            {
+              "name": "emergencyCover",
+              "newParameterName": "emergencycover"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "action_deletenomination_for_nominationservice_svc",
+      "title": "action_deleteNomination_for_nominationservice_svc",
+      "description": "OData action: deleteNomination in the nominationservice_svc service. Returns: NominationService.svc.nominationActionResponse",
+      "odataType": {
+        "operation": {
+          "name": "deleteNomination",
+          "type": "action",
+          "parameters": [
+            {
+              "name": "nominationTarget",
+              "newParameterName": "nominationtarget"
+            },
+            {
+              "name": "userId",
+              "newParameterName": "userid"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    }
+  ]
+}

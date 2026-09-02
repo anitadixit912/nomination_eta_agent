@@ -1,0 +1,48 @@
+{
+  "xsappname": "nomination-eta-cap",
+  "tenant-mode": "dedicated",
+  "description": "Nomination ETA Agent security descriptor",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.ETASupervisor",
+      "description": "Allows approving and rejecting ETA proposals"
+    },
+    {
+      "name": "$XSAPPNAME.ETAViewer",
+      "description": "Read-only access to ETA proposals and audit log"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "ETASupervisor",
+      "description": "Supervisor role — can approve, reject and override ETAs",
+      "scope-references": [
+        "$XSAPPNAME.ETASupervisor",
+        "$XSAPPNAME.ETAViewer"
+      ]
+    },
+    {
+      "name": "ETAViewer",
+      "description": "Read-only viewer role",
+      "scope-references": [
+        "$XSAPPNAME.ETAViewer"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "NominationETA_Supervisor",
+      "description": "Full access to Nomination ETA approval workflow",
+      "role-template-references": [
+        "$XSAPPNAME.ETASupervisor"
+      ]
+    },
+    {
+      "name": "NominationETA_Viewer",
+      "description": "Read-only access to Nomination ETA",
+      "role-template-references": [
+        "$XSAPPNAME.ETAViewer"
+      ]
+    }
+  ]
+}

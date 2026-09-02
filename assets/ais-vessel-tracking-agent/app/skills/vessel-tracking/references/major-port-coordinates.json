@@ -1,0 +1,22 @@
+{
+  "ROTTERDAM": { "lat": 51.9225, "lon": 4.4792, "name": "Port of Rotterdam, Netherlands" },
+  "FUJAIRAH": { "lat": 25.1288, "lon": 56.3361, "name": "Port of Fujairah, UAE" },
+  "RAS TANURA": { "lat": 26.6500, "lon": 50.1667, "name": "Ras Tanura Terminal, Saudi Arabia" },
+  "HOUSTON": { "lat": 29.7280, "lon": -95.2683, "name": "Port of Houston, USA" },
+  "SINGAPORE": { "lat": 1.2897, "lon": 103.8500, "name": "Port of Singapore" },
+  "CORPUS CHRISTI": { "lat": 27.8006, "lon": -97.3964, "name": "Port of Corpus Christi, USA" },
+  "MILFORD HAVEN": { "lat": 51.7080, "lon": -5.0430, "name": "Port of Milford Haven, UK" },
+  "PRIMORSK": { "lat": 60.3667, "lon": 28.6167, "name": "Primorsk Oil Terminal, Russia" },
+  "NOVOROSSIYSK": { "lat": 44.7242, "lon": 37.7692, "name": "Novorossiysk Oil Terminal, Russia" },
+  "TRIESTE": { "lat": 45.6495, "lon": 13.7768, "name": "Port of Trieste, Italy" },
+  "MARSEILLE": { "lat": 43.2965, "lon": 5.3811, "name": "Port of Marseille, France" },
+  "ANTWERP": { "lat": 51.2994, "lon": 4.3814, "name": "Port of Antwerp, Belgium" },
+  "HAMBURG": { "lat": 53.5753, "lon": 9.9897, "name": "Port of Hamburg, Germany" },
+  "GENOA": { "lat": 44.4056, "lon": 8.9463, "name": "Port of Genoa, Italy" },
+  "AUGUSTA": { "lat": 37.2342, "lon": 15.2213, "name": "Port of Augusta, Italy" },
+  "KHARG ISLAND": { "lat": 29.2333, "lon": 50.3167, "name": "Kharg Island Terminal, Iran" },
+  "BASRA": { "lat": 30.5085, "lon": 47.7804, "name": "Basra Oil Terminal, Iraq" },
+  "BANDAR IMAM": { "lat": 30.4333, "lon": 49.0833, "name": "Bandar Imam Khomeini, Iran" },
+  "VADINAR": { "lat": 22.4600, "lon": 69.3700, "name": "Vadinar Terminal, India" },
+  "MUMBAI": { "lat": 18.9388, "lon": 72.8354, "name": "Port of Mumbai, India" }
+}

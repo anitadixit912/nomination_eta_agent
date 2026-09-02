@@ -1,0 +1,103 @@
+{
+  "name": "Refresh ETA On-Demand",
+  "description": "Triggered by the Approval Queue UI when the supervisor clicks the Refresh ETA button. Fetches the current nomination details from CAP, invokes the full ETA Orchestrator Agent pipeline with the latest AIS, weather, and historical data, stores the updated proposal back in CAP for supervisor review. Implements REQ-06 (on-demand ETA refresh).",
+  "nodes": [
+    {
+      "id": "node-webhook-refresh",
+      "name": "Refresh ETA Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "refresh-eta-36de24e7-2bc3-462b-9b8f-829d8f6d937f",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-fetch-nomination",
+      "name": "Fetch Nomination from CAP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [480, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://nomination-eta-cap.company.com/nomination-eta-service/NominationETA?$filter=nominationId eq '{{ $json.nomination_id }}'",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-invoke-agent",
+      "name": "Invoke ETA Orchestrator Agent",
+      "type": "CUSTOM.sapAgent",
+      "typeVersion": 1,
+      "position": [720, 300],
+      "parameters": {
+        "agentName": "{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"}",
+        "agents": "[{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1\",\"name\":\"Historical Nomination Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1\",\"name\":\"AIS Vessel Tracking Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1\",\"name\":\"Geo Weather Agent\"}]",
+        "chatInput": "=Refresh ETA requested by supervisor. Re-analyse ETA using the latest live data for nomination_id={{ $('Refresh ETA Request').item.json.nomination_id }}, material={{ $json.value[0].material }}, transport_system={{ $json.value[0].transportSystem }}, origin={{ $json.value[0].origin }}, destination={{ $json.value[0].destination }}, vessel_mmsi={{ $json.value[0].vesselMMSI }}. Fetch fresh AIS position, latest weather/geopolitical risk, and current historical patterns. Return a full structured JSON ETA proposal.",
+        "sessionId": "=refresh-{{ $('Refresh ETA Request').item.json.nomination_id }}",
+        "blocking": true,
+        "additionalOptions": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "node-store-updated-proposal",
+      "name": "Store Updated ETA Proposal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [960, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://nomination-eta-cap.company.com/api/nominations/{{ $('Refresh ETA Request').item.json.nomination_id }}/proposal",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-respond-refresh",
+      "name": "Respond to UI",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1200, 300],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'eta_refreshed', nomination_id: $('Refresh ETA Request').item.json.nomination_id, requested_by: $('Refresh ETA Request').item.json.requested_by }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Refresh ETA Request": {
+      "main": [
+        [{ "node": "Fetch Nomination from CAP", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Nomination from CAP": {
+      "main": [
+        [{ "node": "Invoke ETA Orchestrator Agent", "type": "main", "index": 0 }]
+      ]
+    },
+    "Invoke ETA Orchestrator Agent": {
+      "main": [
+        [{ "node": "Store Updated ETA Proposal", "type": "main", "index": 0 }]
+      ]
+    },
+    "Store Updated ETA Proposal": {
+      "main": [
+        [{ "node": "Respond to UI", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

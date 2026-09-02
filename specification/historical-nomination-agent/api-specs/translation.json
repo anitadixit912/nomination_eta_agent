@@ -1,0 +1,2501 @@
+{
+  "mcpTranslationVersion": "0.6",
+  "target": {
+    "ordId": "sap.s4:apiResource:OP_OIL_TRANSPORTSYSTEM_0001:v1",
+    "type": "edmx"
+  },
+  "serverInfo": {
+    "name": "sap.mcp/sap_self",
+    "title": "sap_self",
+    "version": "1.0.0",
+    "description": "MCP server for the sap_self service."
+  },
+  "tools": [
+    {
+      "name": "get_metadata_sap_self",
+      "title": "get_metadata_sap_self",
+      "description": "Get metadata of the OData service with optional filtering to reduce token consumption.\nReturns the metadata in XML format, which can be used to discover available entities and their properties.\nCall this endpoint every time before you call other tools to ensure understanding of the schema.\nBased on the metadata, you can dynamically create an OData request.\n\nUse filtering parameters to get specific metadata sections. Without parameters, this tool returns the complete XML metadata (which might be huge).\nOnly use the specified enum values for the filtering parameters.\n",
+      "odataType": {
+        "metadataRequest": {},
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "batch_for_sap_self",
+      "title": "batch_for_sap_self",
+      "description": "Execute multiple OData operations in a single batch request using the $batch endpoint. This allows you to combine multiple tool calls into one HTTP request, improving efficiency when performing multiple operations.",
+      "odataType": {
+        "batchRequest": {},
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list_transportsystem_for_sap_self",
+      "title": "list_TransportSystem_for_sap_self",
+      "description": "Retrieve a list of entities from the TransportSystem collection in the sap_self service. Supports OData query options for filtering, sorting, ranking ($top), skipping ($skip), expanding related entities, counting, selecting specific properties. Only use attributes in the query options that are specified in the metadata. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "read",
+          "parameters": [
+            {
+              "name": "filter"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "orderby"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "skip"
+            },
+            {
+              "name": "expand"
+            },
+            {
+              "name": "count"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create_transportsystem_for_sap_self",
+      "title": "create_TransportSystem_for_sap_self",
+      "description": "Create a new instance of the TransportSystem EntitySet in the sap_self service. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "create",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TransportSystemText",
+              "newParameterName": "transportsystemtext"
+            },
+            {
+              "name": "ModeOfTransport",
+              "newParameterName": "modeoftransport"
+            },
+            {
+              "name": "TransptSystCycleDurationQty",
+              "newParameterName": "transptsystcycledurationqty"
+            },
+            {
+              "name": "TransportSystemDurationUnit",
+              "newParameterName": "transportsystemdurationunit"
+            },
+            {
+              "name": "TransportSystemCarrier",
+              "newParameterName": "transportsystemcarrier"
+            },
+            {
+              "name": "InTransitPlant",
+              "newParameterName": "intransitplant"
+            },
+            {
+              "name": "TransptSystCarrLeadTmeQty",
+              "newParameterName": "transptsystcarrleadtmeqty"
+            },
+            {
+              "name": "TransptSystConfLeadTmeUnt",
+              "newParameterName": "transptsystconfleadtmeunt"
+            },
+            {
+              "name": "CreationDate",
+              "newParameterName": "creationdate"
+            },
+            {
+              "name": "LastChangeDate",
+              "newParameterName": "lastchangedate"
+            },
+            {
+              "name": "IsBlocked",
+              "newParameterName": "isblocked"
+            },
+            {
+              "name": "IsDeleted",
+              "newParameterName": "isdeleted"
+            },
+            {
+              "name": "_TransptSystLocAssgmt",
+              "newParameterName": "transptsystlocassgmt"
+            },
+            {
+              "name": "_TransptSystPlngMatl",
+              "newParameterName": "transptsystplngmatl"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "odata-entityid"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update_transportsystem_for_sap_self",
+      "title": "update_TransportSystem_for_sap_self",
+      "description": "Update an entity in TransportSystem EntitySet in the sap_self service. Provide the key properties to identify the entity and the properties to update in the request body. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "update",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TransportSystemText",
+              "newParameterName": "transportsystemtext"
+            },
+            {
+              "name": "ModeOfTransport",
+              "newParameterName": "modeoftransport"
+            },
+            {
+              "name": "TransptSystCycleDurationQty",
+              "newParameterName": "transptsystcycledurationqty"
+            },
+            {
+              "name": "TransportSystemDurationUnit",
+              "newParameterName": "transportsystemdurationunit"
+            },
+            {
+              "name": "TransportSystemCarrier",
+              "newParameterName": "transportsystemcarrier"
+            },
+            {
+              "name": "InTransitPlant",
+              "newParameterName": "intransitplant"
+            },
+            {
+              "name": "TransptSystCarrLeadTmeQty",
+              "newParameterName": "transptsystcarrleadtmeqty"
+            },
+            {
+              "name": "TransptSystConfLeadTmeUnt",
+              "newParameterName": "transptsystconfleadtmeunt"
+            },
+            {
+              "name": "CreationDate",
+              "newParameterName": "creationdate"
+            },
+            {
+              "name": "LastChangeDate",
+              "newParameterName": "lastchangedate"
+            },
+            {
+              "name": "IsBlocked",
+              "newParameterName": "isblocked"
+            },
+            {
+              "name": "IsDeleted",
+              "newParameterName": "isdeleted"
+            },
+            {
+              "name": "_TransptSystLocAssgmt",
+              "newParameterName": "transptsystlocassgmt"
+            },
+            {
+              "name": "_TransptSystPlngMatl",
+              "newParameterName": "transptsystplngmatl"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delete_transportsystem_for_sap_self",
+      "title": "delete_TransportSystem_for_sap_self",
+      "description": "Delete an entity from TransportSystem EntitySet in the sap_self service.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "delete",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_transportsystem_for_sap_self",
+      "title": "get_TransportSystem_for_sap_self",
+      "description": "Retrieve a single entity by its key from the TransportSystem collection in the sap_self service. Provide the key property value(s) to identify the specific entity to retrieve. Supports OData query options for selecting specific properties ($select), expanding related entities ($expand). If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "readByKey",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "expand"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count_transportsystem_for_sap_self",
+      "title": "count_TransportSystem_for_sap_self",
+      "description": "Get the total count of entities in the TransportSystem collection in the sap_self service. Supports OData $filter to count only entities matching specific criteria. Use this when you need to determine the total number of entities without retrieving the actual data. If you need to understand the available filter properties, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "crudOperation": "count",
+          "parameters": [
+            {
+              "name": "filter"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list_locationassignment_for_sap_self",
+      "title": "list_LocationAssignment_for_sap_self",
+      "description": "Retrieve a list of entities from the LocationAssignment collection in the sap_self service. Supports OData query options for filtering, sorting, ranking ($top), skipping ($skip), expanding related entities, counting, selecting specific properties. Only use attributes in the query options that are specified in the metadata. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "read",
+          "parameters": [
+            {
+              "name": "filter"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "orderby"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "skip"
+            },
+            {
+              "name": "expand"
+            },
+            {
+              "name": "count"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create_locationassignment_for_sap_self",
+      "title": "create_LocationAssignment_for_sap_self",
+      "description": "Create a new instance of the LocationAssignment EntitySet in the sap_self service. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "create",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            },
+            {
+              "name": "TSWLocationName",
+              "newParameterName": "tswlocationname"
+            },
+            {
+              "name": "BusinessLocationIsOrigin",
+              "newParameterName": "businesslocationisorigin"
+            },
+            {
+              "name": "BusinessLocationIsDestination",
+              "newParameterName": "businesslocationisdestination"
+            },
+            {
+              "name": "_TransportSystem",
+              "newParameterName": "transportsystem_2"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "odata-entityid"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update_locationassignment_for_sap_self",
+      "title": "update_LocationAssignment_for_sap_self",
+      "description": "Update an entity in LocationAssignment EntitySet in the sap_self service. Provide the key properties to identify the entity and the properties to update in the request body. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "update",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            },
+            {
+              "name": "TSWLocationName",
+              "newParameterName": "tswlocationname"
+            },
+            {
+              "name": "BusinessLocationIsOrigin",
+              "newParameterName": "businesslocationisorigin"
+            },
+            {
+              "name": "BusinessLocationIsDestination",
+              "newParameterName": "businesslocationisdestination"
+            },
+            {
+              "name": "_TransportSystem",
+              "newParameterName": "transportsystem_2"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delete_locationassignment_for_sap_self",
+      "title": "delete_LocationAssignment_for_sap_self",
+      "description": "Delete an entity from LocationAssignment EntitySet in the sap_self service.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "delete",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_locationassignment_for_sap_self",
+      "title": "get_LocationAssignment_for_sap_self",
+      "description": "Retrieve a single entity by its key from the LocationAssignment collection in the sap_self service. Provide the key property value(s) to identify the specific entity to retrieve. Supports OData query options for selecting specific properties ($select), expanding related entities ($expand). If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "readByKey",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "expand"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count_locationassignment_for_sap_self",
+      "title": "count_LocationAssignment_for_sap_self",
+      "description": "Get the total count of entities in the LocationAssignment collection in the sap_self service. Supports OData $filter to count only entities matching specific criteria. Use this when you need to determine the total number of entities without retrieving the actual data. If you need to understand the available filter properties, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "crudOperation": "count",
+          "parameters": [
+            {
+              "name": "filter"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list_plannedmaterials_for_sap_self",
+      "title": "list_PlannedMaterials_for_sap_self",
+      "description": "Retrieve a list of entities from the PlannedMaterials collection in the sap_self service. Supports OData query options for filtering, sorting, ranking ($top), skipping ($skip), expanding related entities, counting, selecting specific properties. Only use attributes in the query options that are specified in the metadata. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "read",
+          "parameters": [
+            {
+              "name": "filter"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "orderby"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "skip"
+            },
+            {
+              "name": "expand"
+            },
+            {
+              "name": "count"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create_plannedmaterials_for_sap_self",
+      "title": "create_PlannedMaterials_for_sap_self",
+      "description": "Create a new instance of the PlannedMaterials EntitySet in the sap_self service. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "create",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            },
+            {
+              "name": "MaterialName",
+              "newParameterName": "materialname"
+            },
+            {
+              "name": "_TransportSystem",
+              "newParameterName": "transportsystem_2"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "odata-entityid"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update_plannedmaterials_for_sap_self",
+      "title": "update_PlannedMaterials_for_sap_self",
+      "description": "Update an entity in PlannedMaterials EntitySet in the sap_self service. Provide the key properties to identify the entity and the properties to update in the request body. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "update",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            },
+            {
+              "name": "MaterialName",
+              "newParameterName": "materialname"
+            },
+            {
+              "name": "_TransportSystem",
+              "newParameterName": "transportsystem_2"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delete_plannedmaterials_for_sap_self",
+      "title": "delete_PlannedMaterials_for_sap_self",
+      "description": "Delete an entity from PlannedMaterials EntitySet in the sap_self service.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "delete",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get_plannedmaterials_for_sap_self",
+      "title": "get_PlannedMaterials_for_sap_self",
+      "description": "Retrieve a single entity by its key from the PlannedMaterials collection in the sap_self service. Provide the key property value(s) to identify the specific entity to retrieve. Supports OData query options for selecting specific properties ($select), expanding related entities ($expand). If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "readByKey",
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            },
+            {
+              "name": "select"
+            },
+            {
+              "name": "expand"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count_plannedmaterials_for_sap_self",
+      "title": "count_PlannedMaterials_for_sap_self",
+      "description": "Get the total count of entities in the PlannedMaterials collection in the sap_self service. Supports OData $filter to count only entities matching specific criteria. Use this when you need to determine the total number of entities without retrieving the actual data. If you need to understand the available filter properties, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "crudOperation": "count",
+          "parameters": [
+            {
+              "name": "filter"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list__transptsystlocassgmt_in_transportsystem_for_sap_self",
+      "title": "list__TransptSystLocAssgmt_in_TransportSystem_for_sap_self",
+      "description": "Navigate from TransportSystem to related OIL_TransptSystLocAssgmt_Type entities via the '_TransptSystLocAssgmt' navigation property. Supports OData query options for filtering, sorting, paging, expanding, counting, and selecting specific properties. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystLocAssgmt",
+            "crudOperation": "read",
+            "parameters": [
+              {
+                "name": "filter"
+              },
+              {
+                "name": "select"
+              },
+              {
+                "name": "orderby"
+              },
+              {
+                "name": "top"
+              },
+              {
+                "name": "skip"
+              },
+              {
+                "name": "expand"
+              },
+              {
+                "name": "count"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create__transptsystlocassgmt_in_transportsystem_for_sap_self",
+      "title": "create__TransptSystLocAssgmt_in_TransportSystem_for_sap_self",
+      "description": "Create a new OIL_TransptSystLocAssgmt_Type entity via the '_TransptSystLocAssgmt' navigation property of TransportSystem. Provide the parent key and the properties of the new entity. If the structure is unknown, call get_metadata_sap_self tool first.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystLocAssgmt",
+            "crudOperation": "create",
+            "parameters": [
+              {
+                "name": "TransportSystem",
+                "newParameterName": "transportsystem_2"
+              },
+              {
+                "name": "TSWLocationID",
+                "newParameterName": "tswlocationid"
+              },
+              {
+                "name": "TSWLocationName",
+                "newParameterName": "tswlocationname"
+              },
+              {
+                "name": "BusinessLocationIsOrigin",
+                "newParameterName": "businesslocationisorigin"
+              },
+              {
+                "name": "BusinessLocationIsDestination",
+                "newParameterName": "businesslocationisdestination"
+              },
+              {
+                "name": "_TransportSystem",
+                "newParameterName": "transportsystem_3"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "odata-entityid"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count__transptsystlocassgmt_in_transportsystem_for_sap_self",
+      "title": "count__TransptSystLocAssgmt_in_TransportSystem_for_sap_self",
+      "description": "Count OIL_TransptSystLocAssgmt_Type entities accessible via the '_TransptSystLocAssgmt' navigation property of TransportSystem in the sap_self service. Returns the total number of matching entities.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystLocAssgmt",
+            "crudOperation": "count",
+            "parameters": [
+              {
+                "name": "filter"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "list__transptsystplngmatl_in_transportsystem_for_sap_self",
+      "title": "list__TransptSystPlngMatl_in_TransportSystem_for_sap_self",
+      "description": "Navigate from TransportSystem to related OIL_TransptSystPlngMatl_Type entities via the '_TransptSystPlngMatl' navigation property. Supports OData query options for filtering, sorting, paging, expanding, counting, and selecting specific properties. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystPlngMatl",
+            "crudOperation": "read",
+            "parameters": [
+              {
+                "name": "filter"
+              },
+              {
+                "name": "select"
+              },
+              {
+                "name": "orderby"
+              },
+              {
+                "name": "top"
+              },
+              {
+                "name": "skip"
+              },
+              {
+                "name": "expand"
+              },
+              {
+                "name": "count"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "create__transptsystplngmatl_in_transportsystem_for_sap_self",
+      "title": "create__TransptSystPlngMatl_in_TransportSystem_for_sap_self",
+      "description": "Create a new OIL_TransptSystPlngMatl_Type entity via the '_TransptSystPlngMatl' navigation property of TransportSystem. Provide the parent key and the properties of the new entity. If the structure is unknown, call get_metadata_sap_self tool first.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystPlngMatl",
+            "crudOperation": "create",
+            "parameters": [
+              {
+                "name": "TransportSystem",
+                "newParameterName": "transportsystem_2"
+              },
+              {
+                "name": "Material",
+                "newParameterName": "material"
+              },
+              {
+                "name": "MaterialName",
+                "newParameterName": "materialname"
+              },
+              {
+                "name": "_TransportSystem",
+                "newParameterName": "transportsystem_3"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "location"
+          },
+          {
+            "name": "odata-entityid"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count__transptsystplngmatl_in_transportsystem_for_sap_self",
+      "title": "count__TransptSystPlngMatl_in_TransportSystem_for_sap_self",
+      "description": "Count OIL_TransptSystPlngMatl_Type entities accessible via the '_TransptSystPlngMatl' navigation property of TransportSystem in the sap_self service. Returns the total number of matching entities.",
+      "odataType": {
+        "entitySet": {
+          "name": "TransportSystem",
+          "navigationProperty": {
+            "name": "_TransptSystPlngMatl",
+            "crudOperation": "count",
+            "parameters": [
+              {
+                "name": "filter"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get__transportsystem_in_locationassignment_for_sap_self",
+      "title": "get__TransportSystem_in_LocationAssignment_for_sap_self",
+      "description": "Navigate from LocationAssignment to the related OIL_TransportSystem_Type entity via the '_TransportSystem' navigation property. Supports $select and $expand query options. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "navigationProperty": {
+            "name": "_TransportSystem",
+            "crudOperation": "readByKey",
+            "parameters": [
+              {
+                "name": "select"
+              },
+              {
+                "name": "expand"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update__transportsystem_in_locationassignment_for_sap_self",
+      "title": "update__TransportSystem_in_LocationAssignment_for_sap_self",
+      "description": "Update the OIL_TransportSystem_Type entity navigated from LocationAssignment via the '_TransportSystem' navigation property (HTTP PATCH). Provide the parent key and the properties to update. If the structure is unknown, call get_metadata_sap_self tool first.",
+      "odataType": {
+        "entitySet": {
+          "name": "LocationAssignment",
+          "navigationProperty": {
+            "name": "_TransportSystem",
+            "crudOperation": "update",
+            "parameters": [
+              {
+                "name": "TransportSystemText",
+                "newParameterName": "transportsystemtext"
+              },
+              {
+                "name": "ModeOfTransport",
+                "newParameterName": "modeoftransport"
+              },
+              {
+                "name": "TransptSystCycleDurationQty",
+                "newParameterName": "transptsystcycledurationqty"
+              },
+              {
+                "name": "TransportSystemDurationUnit",
+                "newParameterName": "transportsystemdurationunit"
+              },
+              {
+                "name": "TransportSystemCarrier",
+                "newParameterName": "transportsystemcarrier"
+              },
+              {
+                "name": "InTransitPlant",
+                "newParameterName": "intransitplant"
+              },
+              {
+                "name": "TransptSystCarrLeadTmeQty",
+                "newParameterName": "transptsystcarrleadtmeqty"
+              },
+              {
+                "name": "TransptSystConfLeadTmeUnt",
+                "newParameterName": "transptsystconfleadtmeunt"
+              },
+              {
+                "name": "CreationDate",
+                "newParameterName": "creationdate"
+              },
+              {
+                "name": "LastChangeDate",
+                "newParameterName": "lastchangedate"
+              },
+              {
+                "name": "IsBlocked",
+                "newParameterName": "isblocked"
+              },
+              {
+                "name": "IsDeleted",
+                "newParameterName": "isdeleted"
+              },
+              {
+                "name": "_TransptSystLocAssgmt",
+                "newParameterName": "transptsystlocassgmt"
+              },
+              {
+                "name": "_TransptSystPlngMatl",
+                "newParameterName": "transptsystplngmatl"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "TSWLocationID",
+              "newParameterName": "tswlocationid"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "get__transportsystem_in_plannedmaterials_for_sap_self",
+      "title": "get__TransportSystem_in_PlannedMaterials_for_sap_self",
+      "description": "Navigate from PlannedMaterials to the related OIL_TransportSystem_Type entity via the '_TransportSystem' navigation property. Supports $select and $expand query options. If the structure of the entity is not known, call get_metadata_sap_self tool first to get the metadata.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "navigationProperty": {
+            "name": "_TransportSystem",
+            "crudOperation": "readByKey",
+            "parameters": [
+              {
+                "name": "select"
+              },
+              {
+                "name": "expand"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "retry-after"
+          },
+          {
+            "name": "asyncresult"
+          },
+          {
+            "name": "odata-error"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    },
+    {
+      "name": "update__transportsystem_in_plannedmaterials_for_sap_self",
+      "title": "update__TransportSystem_in_PlannedMaterials_for_sap_self",
+      "description": "Update the OIL_TransportSystem_Type entity navigated from PlannedMaterials via the '_TransportSystem' navigation property (HTTP PATCH). Provide the parent key and the properties to update. If the structure is unknown, call get_metadata_sap_self tool first.",
+      "odataType": {
+        "entitySet": {
+          "name": "PlannedMaterials",
+          "navigationProperty": {
+            "name": "_TransportSystem",
+            "crudOperation": "update",
+            "parameters": [
+              {
+                "name": "TransportSystemText",
+                "newParameterName": "transportsystemtext"
+              },
+              {
+                "name": "ModeOfTransport",
+                "newParameterName": "modeoftransport"
+              },
+              {
+                "name": "TransptSystCycleDurationQty",
+                "newParameterName": "transptsystcycledurationqty"
+              },
+              {
+                "name": "TransportSystemDurationUnit",
+                "newParameterName": "transportsystemdurationunit"
+              },
+              {
+                "name": "TransportSystemCarrier",
+                "newParameterName": "transportsystemcarrier"
+              },
+              {
+                "name": "InTransitPlant",
+                "newParameterName": "intransitplant"
+              },
+              {
+                "name": "TransptSystCarrLeadTmeQty",
+                "newParameterName": "transptsystcarrleadtmeqty"
+              },
+              {
+                "name": "TransptSystConfLeadTmeUnt",
+                "newParameterName": "transptsystconfleadtmeunt"
+              },
+              {
+                "name": "CreationDate",
+                "newParameterName": "creationdate"
+              },
+              {
+                "name": "LastChangeDate",
+                "newParameterName": "lastchangedate"
+              },
+              {
+                "name": "IsBlocked",
+                "newParameterName": "isblocked"
+              },
+              {
+                "name": "IsDeleted",
+                "newParameterName": "isdeleted"
+              },
+              {
+                "name": "_TransptSystLocAssgmt",
+                "newParameterName": "transptsystlocassgmt"
+              },
+              {
+                "name": "_TransptSystPlngMatl",
+                "newParameterName": "transptsystplngmatl"
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "TransportSystem",
+              "newParameterName": "transportsystem"
+            },
+            {
+              "name": "Material",
+              "newParameterName": "material"
+            }
+          ]
+        },
+        "responseHeaders": [
+          {
+            "name": "age"
+          },
+          {
+            "name": "cache-control"
+          },
+          {
+            "name": "expires"
+          },
+          {
+            "name": "last-modified"
+          },
+          {
+            "name": "x-request-id"
+          },
+          {
+            "name": "x-correlation-id"
+          },
+          {
+            "name": "content-type"
+          },
+          {
+            "name": "content-encoding"
+          },
+          {
+            "name": "content-language"
+          },
+          {
+            "name": "content-length"
+          },
+          {
+            "name": "odata-version"
+          },
+          {
+            "name": "etag"
+          },
+          {
+            "name": "preference-applied"
+          },
+          {
+            "name": "vary"
+          },
+          {
+            "name": "sap-messages"
+          }
+        ]
+      }
+    }
+  ]
+}
