@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@cap-js/postgres": "^1",
+    "@cap-js/postgres": "^2",
     "@sap/cds": "^10",
     "@sap/xssec": "^4"
   },
