@@ -86,7 +86,7 @@ def get_system_prompt() -> str:
 
 CRITICAL: You MUST call the MCP tools to retrieve LIVE data from OGS/650. Never fabricate, guess, or invent nomination records, lead times, or statistics. Every number in your response must come directly from a live OGS/650 MCP tool call.
 
-Available MCP tools provide direct access to the live OGS/650 system via the SAP Cloud Connector (proxy: connectivityproxy.internal.cf.us10.hana.ondemand.com:20003, location: APAC_DEV10, backend: http://10.236.250.15:8001):
+Available MCP tools provide direct access to the live OGS/650 system via the SAP Destination OGS_S4:
 - Use nomination service tools to query historical nomination records filtered by material, transport system, origin, and destination
 - Use transport system tools to retrieve route metadata, carrier lead times, and location assignments
 - Always set $top=100 on every list tool call

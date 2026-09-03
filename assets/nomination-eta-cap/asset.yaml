@@ -64,8 +64,4 @@ requires:
 custom:
   cap:
     env:
-      OGS_BASE_URL: "http://10.236.250.15:8001"
-      OGS_USER: "i336812"
-      CC_PROXY_HOST: "connectivityproxy.internal.cf.us10.hana.ondemand.com"
-      CC_PROXY_PORT: "20003"
-      CC_LOCATION_ID: "APAC_DEV10"
+      OGS_DESTINATION: "OGS_S4"

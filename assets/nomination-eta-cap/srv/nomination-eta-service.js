@@ -11,19 +11,12 @@ export default class NominationETAService extends cds.ApplicationService {
       const { nominationId, approvedETA, decisionMaker } = req.data;
       const { NominationETA, ETAAuditLog } = this.entities;
 
-      // 1. Find the current proposal
-      const proposal = await SELECT.one.from(NominationETA)
-        .where({ nominationId });
+      const proposal = await SELECT.one.from(NominationETA).where({ nominationId });
       if (!proposal) return req.reject(404, `Nomination ${nominationId} not found`);
       if (proposal.status === 'approved') return req.reject(409, 'ETA already approved');
 
-      // 2. Update status → approved
-      await UPDATE(NominationETA, proposal.ID).with({
-        approvedETA,
-        status: 'approved'
-      });
+      await UPDATE(NominationETA, proposal.ID).with({ approvedETA, status: 'approved' });
 
-      // 3. Write audit log
       await INSERT.into(ETAAuditLog).entries({
         nominationId,
         eventType: 'approved',
@@ -33,7 +26,7 @@ export default class NominationETAService extends cds.ApplicationService {
         sourceAgents: 'historical-nomination-agent, ais-vessel-tracking-agent, geo-weather-agent'
       });
 
-      // 4. Write-back to OGS/650 via Cloud Connector
+      // Write-back to OGS/650 via OGS_S4 destination
       try {
         await _writeETAToOGS(nominationId, approvedETA, decisionMaker, proposal.reasoning);
         await UPDATE(NominationETA, proposal.ID).with({ status: 'written_back' });
@@ -42,13 +35,12 @@ export default class NominationETAService extends cds.ApplicationService {
           eventType: 'written_back',
           etaValue: approvedETA,
           decisionMaker,
-          agentReasoning: `ETA written back to OGS/650`,
+          agentReasoning: 'ETA written back to OGS/650 via OGS_S4 destination',
           sourceAgents: 'nomination-eta-cap'
         });
         LOG.info(`[M5.achieved]: ETA written to OGS/650 — nominationId=${nominationId}`);
       } catch (e) {
         LOG.error(`[M5.missed]: ETA write to OGS/650 failed — nominationId=${nominationId}, reason=${e.message}`);
-        // Don't fail the action — the approval is recorded, OGS write can be retried
       }
 
       return `ETA approved for nomination ${nominationId}`;
@@ -103,7 +95,6 @@ export default class NominationETAService extends cds.ApplicationService {
         sourceAgents: 'nomination-eta-cap'
       });
 
-      // Write to OGS/650
       try {
         await _writeETAToOGS(nominationId, manualETA, decisionMaker, 'Manual override by supervisor');
         LOG.info(`[M5.achieved]: Manual ETA written to OGS/650 — nominationId=${nominationId}`);
@@ -118,18 +109,10 @@ export default class NominationETAService extends cds.ApplicationService {
   }
 }
 
-// ── OGS/650 write-back via SAP Cloud Connector ─────────────
+// ── OGS/650 write-back via SAP Destination OGS_S4 ──────────
 async function _writeETAToOGS(nominationId, eta, user, reason) {
-  const CONNECTIVITY_PROXY = process.env.CONNECTIVITY_PROXY
-    || 'connectivityproxy.internal.cf.us10.hana.ondemand.com:20003';
-  const CLOUD_CONNECTOR_LOCATION = process.env.CLOUD_CONNECTOR_LOCATION_ID || 'APAC_DEV10';
-  const OGS_BASE_URL = process.env.OGS_BASE_URL || 'http://10.236.250.15:8001';
-  const OGS_USER = process.env.OGS_USER || 'i336812';
-  const OGS_PASSWORD = process.env.OGS_PASSWORD || '';
+  const dest = await cds.connect.to('OGS_S4');
 
-  const credentials = Buffer.from(`${OGS_USER}:${OGS_PASSWORD}`).toString('base64');
-
-  // SOAP envelope for Change TSW Nomination
   const soapBody = `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                   xmlns:nom="http://sap.com/xi/OIL/TSW">
@@ -144,36 +127,17 @@ async function _writeETAToOGS(nominationId, eta, user, reason) {
   </soapenv:Body>
 </soapenv:Envelope>`;
 
-  const url = `${OGS_BASE_URL}/sap/bc/srt/wsdl/soap1.1/service_definition/TSW_NOMINATION`;
-
-  if (!OGS_PASSWORD) {
-    throw new Error(
-      'OGS_PASSWORD environment variable is not set. ' +
-      'Cannot write ETA to OGS/650. ' +
-      'Set OGS_PASSWORD in the deployment environment before approving nominations.'
-    );
-  }
-
-  const { default: https } = await import('https');
-  const { default: http } = await import('http');
-  const client = url.startsWith('https') ? https : http;
-
-  await new Promise((resolve, reject) => {
-    const req = client.request(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/xml; charset=UTF-8',
-        'SOAPAction': 'ChangeNomination',
-        'Authorization': `Basic ${credentials}`,
-        'SAP-Connectivity-SCC-Location_ID': CLOUD_CONNECTOR_LOCATION
-      }
-    }, (res) => {
-      res.resume();
-      if (res.statusCode >= 200 && res.statusCode < 300) resolve();
-      else reject(new Error(`OGS returned ${res.statusCode}`));
-    });
-    req.on('error', reject);
-    req.write(soapBody);
-    req.end();
+  const response = await dest.send({
+    method: 'POST',
+    path: '/sap/bc/srt/wsdl/soap1.1/service_definition/TSW_NOMINATION',
+    headers: {
+      'Content-Type': 'text/xml; charset=UTF-8',
+      'SOAPAction': 'ChangeNomination'
+    },
+    data: soapBody
   });
+
+  if (response?.status >= 300) {
+    throw new Error(`OGS_S4 destination returned HTTP ${response.status}`);
+  }
 }
