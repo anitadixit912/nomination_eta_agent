@@ -25,16 +25,8 @@ container:
       value: "http://geo-weather-agent:5000"
     - name: CAP_SERVICE_URL
       value: "http://nomination-eta-cap:4004"
-    - name: OGS_BASE_URL
-      value: "http://10.236.250.15:8001"
-    - name: OGS_USER
-      value: "i336812"
-    - name: OGS_PASSWORD
-      value: ""
-    - name: CONNECTIVITY_PROXY
-      value: "connectivityproxy.internal.cf.us10.hana.ondemand.com:20003"
-    - name: CLOUD_CONNECTOR_LOCATION_ID
-      value: "APAC_DEV10"
+    - name: OGS_DESTINATION
+      value: "OGS_S4"
 
 requires:
   - name: ad-historical-nomination-agent

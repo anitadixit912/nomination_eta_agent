@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@cap-js/hana": "^3",
+    "@cap-js/postgres": "^1",
     "@sap/cds": "^10",
     "@sap/xssec": "^4"
   },
@@ -25,6 +25,15 @@
     "[production]": {
       "folders": {
         "app": "app/react-ui/dist"
+      },
+      "requires": {
+        "db": {
+          "kind": "postgres"
+        },
+        "OGS_S4": {
+          "kind": "rest",
+          "destination": "OGS_S4"
+        }
       }
     }
   },

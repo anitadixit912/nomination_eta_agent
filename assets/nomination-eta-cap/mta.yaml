@@ -1,7 +1,7 @@
 _schema-version: "3.1"
 ID: nomination-eta-new-cap
 version: 1.0.0
-description: "Nomination ETA Agent — CAP backend + React UI"
+description: "Nomination ETA Agent - CAP backend + React UI"
 
 parameters:
   enable-parallel-deployments: true
@@ -16,7 +16,6 @@ build-parameters:
 
 modules:
 
-  # ── CAP Node.js Server ─────────────────────────────────────
   - name: nomination-eta-new-cap-srv
     type: nodejs
     path: gen/srv
@@ -34,32 +33,13 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
-      - name: nomination-eta-new-hdi
+      - name: nomination-eta-new-postgres
       - name: nomination-eta-new-xsuaa
       - name: nomination-eta-new-destination
       - name: nomination-eta-new-connectivity
     properties:
-      OGS_BASE_URL: "http://10.236.250.15:8001"
-      OGS_USER: "i336812"
-      CC_PROXY_HOST: "connectivityproxy.internal.cf.us10.hana.ondemand.com"
-      CC_PROXY_PORT: "20003"
-      CC_LOCATION_ID: "APAC_DEV10"
+      CDS_REQUIRES_DB_KIND: "postgres"
 
-  # ── HDI DB Deployer ────────────────────────────────────────
-  - name: nomination-eta-new-cap-db-deployer
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: npm
-      ignore:
-        - .env
-        - node_modules/
-    requires:
-      - name: nomination-eta-new-hdi
-
-  # ── React UI (served as static files via approuter) ────────
   - name: nomination-eta-new-cap-ui
     type: html5
     path: app/react-ui/dist
@@ -72,16 +52,12 @@ modules:
 
 resources:
 
-  # ── SAP HANA HDI Container ─────────────────────────────────
-  - name: nomination-eta-new-hdi
-    type: com.sap.xs.hdi-container
+  - name: nomination-eta-new-postgres
+    type: org.cloudfoundry.managed-service
     parameters:
-      service: hana
-      service-plan: hdi-shared
-    properties:
-      hdi-service-name: ${service-name}
+      service: postgresql-db
+      service-plan: standard
 
-  # ── XSUAA (Authentication) ─────────────────────────────────
   - name: nomination-eta-new-xsuaa
     type: org.cloudfoundry.managed-service
     parameters:
@@ -92,14 +68,12 @@ resources:
         xsappname: nomination-eta-new-cap-${org}-${space}
         tenant-mode: dedicated
 
-  # ── Destination Service ────────────────────────────────────
   - name: nomination-eta-new-destination
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
       service-plan: lite
 
-  # ── Connectivity Service (Cloud Connector tunnel) ──────────
   - name: nomination-eta-new-connectivity
     type: org.cloudfoundry.managed-service
     parameters:
