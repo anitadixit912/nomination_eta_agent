@@ -32,7 +32,8 @@
         "auth": "dummy",
         "db": {
           "kind": "sqlite",
-          "credentials": { "url": "db.sqlite" }
+          "credentials": { "url": "db.sqlite" },
+          "schema_evolution": "auto"
         },
         "OGS_S4": {
           "kind": "rest",
