@@ -24,13 +24,13 @@ modules:
       memory: 512M
       disk-quota: 1024M
     build-parameters:
-      builder: npm
-      ignore:
-        - .env
-        - node_modules/
+      builder: custom
       commands:
         - npm install --production
         - node -e "const fs=require('fs');const src='../../app/react-ui/dist';const dst='app';fs.mkdirSync(dst,{recursive:true});fs.cpSync(src,dst,{recursive:true});console.log('UI copied');"
+      ignore:
+        - .env
+        - node_modules/
     provides:
       - name: srv-api
         properties:
