@@ -1,4 +1,5 @@
 node_modules/
+app/react-ui/dist/
 target/
 _out/
 gen/
