@@ -13,7 +13,7 @@ build-parameters:
         - npm install
         - npm run build --workspace=app/react-ui
         - npx cds build --production
-        - mkdir -p gen/srv/app && cp -r app/react-ui/dist/. gen/srv/app
+        - node -e "const fs=require('fs');const path=require('path');const src='app/react-ui/dist';const dst='gen/srv/app';fs.mkdirSync(dst,{recursive:true});fs.cpSync(src,dst,{recursive:true});console.log('UI copied to gen/srv/app');"
 
 modules:
 
