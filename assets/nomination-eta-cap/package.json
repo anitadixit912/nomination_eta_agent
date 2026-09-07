@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "cds deploy && cds-serve",
+    "start": "cds-serve",
     "build": "npm run build --workspace=app/react-ui && cds build --production"
   },
   "private": true,
@@ -27,6 +27,7 @@
       }
     },
     "[production]": {
+      "outbox": false,
       "requires": {
         "auth": "dummy",
         "db": {
