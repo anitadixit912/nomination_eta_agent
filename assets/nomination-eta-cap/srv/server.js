@@ -10,21 +10,16 @@ cds.on('bootstrap', (app) => {
   registerApiRoutes(app);
 
   const __dirname = dirname(fileURLToPath(import.meta.url));
-  
-  // Try gen/srv/app first (production), then app/react-ui/dist (local)
-  const prodPath = join(__dirname, '..', 'app');
-  const devPath = join(__dirname, '..', '..', 'app', 'react-ui', 'dist');
-  const uiPath = existsSync(prodPath) && existsSync(join(prodPath, 'index.html')) 
-    ? prodPath 
-    : devPath;
+  const uiPath = join(__dirname, '..', 'app');
 
   if (existsSync(uiPath) && existsSync(join(uiPath, 'index.html'))) {
     app.use(express.static(uiPath));
     app.get('/', (req, res) => {
       res.sendFile(join(uiPath, 'index.html'));
     });
-    app.get('*', (req, res, next) => {
-      if (req.path.startsWith('/api') || req.path.startsWith('/odata') || req.path.startsWith('/odata/v4')) return next();
+    // Express v5 compatible catch-all
+    app.use((req, res, next) => {
+      if (req.path.startsWith('/api') || req.path.startsWith('/odata')) return next();
       res.sendFile(join(uiPath, 'index.html'));
     });
   }
