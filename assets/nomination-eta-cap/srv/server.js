@@ -8,8 +8,6 @@ cds.on('bootstrap', (app) => {
   app.use(express.json());
   registerApiRoutes(app);
 
-  // CF deploys gen/srv contents to /home/vcap/app
-  // So gen/srv/app becomes /home/vcap/app/app
   const uiPath = join(process.cwd(), 'app');
 
   console.log('[UI] cwd:', process.cwd());
@@ -24,8 +22,11 @@ cds.on('bootstrap', (app) => {
     console.log('[UI] Serving React UI from:', uiPath);
     app.use(express.static(uiPath));
     app.use((req, res, next) => {
+      // Let CDS handle OData, API and any file with an extension
       if (req.path.startsWith('/odata') ||
           req.path.startsWith('/api') ||
+          req.path.startsWith('/nomination-eta-service') ||
+          req.path.startsWith('/rest') ||
           req.path.match(/\.\w+$/)) {
         return next();
       }
