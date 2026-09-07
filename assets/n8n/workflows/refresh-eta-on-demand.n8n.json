@@ -23,7 +23,7 @@
       "position": [480, 300],
       "parameters": {
         "method": "GET",
-        "url": "=https://nomination-eta-cap.company.com/nomination-eta-service/NominationETA?$filter=nominationId eq '{{ $json.nomination_id }}'",
+        "url": "=https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/odata/v4/nomination-eta/NominationETA?$filter=nominationId eq '{{ $json.nomination_id }}'",
         "options": {}
       }
     },
@@ -52,7 +52,7 @@
       "position": [960, 300],
       "parameters": {
         "method": "POST",
-        "url": "=https://nomination-eta-cap.company.com/api/nominations/{{ $('Refresh ETA Request').item.json.nomination_id }}/proposal",
+        "url": "=https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/api/nominations/{{ $('Refresh ETA Request').item.json.nomination_id }}/proposal",
         "sendBody": true,
         "bodyContentType": "json",
         "specifyBody": "json",
