@@ -9,7 +9,7 @@ import {
 import EtaProposalCard from './EtaProposalCard.jsx';
 import AlternativesPanel from './AlternativesPanel.jsx';
 
-const SERVICE = '/odata/v4/nomination-eta-service';
+const SERVICE = '/odata/v4/nomination-eta';
 
 function confidenceBadge(confidence) {
   const map = { High: 'positive', Medium: 'critical', Low: 'negative' };
