@@ -3,7 +3,7 @@ import AdmZip from 'adm-zip'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/react-ui/',
+  base: '/',
   plugins: [react(), {
       name: 'zip-dist', // zipping ./dist is required for BTP HTML5 repo or Application Frontend deployment
       closeBundle() {
