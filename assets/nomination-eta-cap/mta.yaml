@@ -13,6 +13,7 @@ build-parameters:
         - npm install
         - npm run build --workspace=app/react-ui
         - npx cds build --production
+        - mkdir -p gen/srv/app && cp -r app/react-ui/dist/. gen/srv/app
 
 modules:
 
