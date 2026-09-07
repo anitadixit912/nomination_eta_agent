@@ -13,13 +13,21 @@ cds.on('bootstrap', (app) => {
   const uiPath = join(__dirname, '..', 'app');
 
   if (existsSync(uiPath) && existsSync(join(uiPath, 'index.html'))) {
-    app.use(express.static(uiPath));
-    app.get('/', (req, res) => {
-      res.sendFile(join(uiPath, 'index.html'));
-    });
-    // Express v5 compatible catch-all
+    // Serve static files with correct MIME types
+    app.use(express.static(uiPath, {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
+        if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
+        if (filePath.endsWith('.svg')) res.setHeader('Content-Type', 'image/svg+xml');
+      }
+    }));
+
+    // SPA fallback — only for non-API, non-static requests
     app.use((req, res, next) => {
-      if (req.path.startsWith('/api') || req.path.startsWith('/odata')) return next();
+      const isStatic = req.path.includes('.') || 
+                       req.path.startsWith('/api') || 
+                       req.path.startsWith('/odata');
+      if (isStatic) return next();
       res.sendFile(join(uiPath, 'index.html'));
     });
   }
