@@ -13,6 +13,7 @@ build-parameters:
         - npm install
         - npm run build --workspace=app/react-ui
         - npx cds build --production
+        - npx cds deploy --to sqlite:gen/srv/db.sqlite
 
 modules:
 
@@ -28,7 +29,7 @@ modules:
       commands:
         - npm install --production
         - node -e "const fs=require('fs');const src='../../app/react-ui/dist';const dst='app';if(fs.existsSync(src)){fs.mkdirSync(dst,{recursive:true});fs.cpSync(src,dst,{recursive:true});console.log('UI copied to app/');}else{console.error('Source not found:',src);}"
-        - npx cds deploy --to sqlite:db.sqlite
+
     provides:
       - name: srv-api
         properties:
