@@ -13,6 +13,7 @@ build-parameters:
         - npm install
         - npm run build --workspace=app/react-ui
         - npx cds build --production
+        - mkdir -p gen/srv/app && cp -r app/react-ui/dist/. gen/srv/app
 
 modules:
 
@@ -24,10 +25,7 @@ modules:
       memory: 512M
       disk-quota: 1024M
     build-parameters:
-      builder: custom
-      commands:
-        - npm install --production
-        - node -e "const fs=require('fs');const src='../../app/react-ui/dist';const dst='app';fs.mkdirSync(dst,{recursive:true});fs.cpSync(src,dst,{recursive:true});console.log('UI copied');"
+      builder: npm
       ignore:
         - .env
         - node_modules/
@@ -39,16 +37,6 @@ modules:
       - name: nomination-eta-new-xsuaa
       - name: nomination-eta-new-destination
       - name: nomination-eta-new-connectivity
-
-  - name: nomination-eta-new-cap-ui
-    type: html5
-    path: app/react-ui/dist
-    build-parameters:
-      builder: custom
-      commands: []
-      supported-platforms: []
-    requires:
-      - name: nomination-eta-new-xsuaa
 
 resources:
 
