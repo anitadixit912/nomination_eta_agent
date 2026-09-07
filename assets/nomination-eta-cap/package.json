@@ -14,6 +14,9 @@
   },
   "private": true,
   "cds": {
+    "folders": {
+      "app": "app/react-ui/dist"
+    },
     "[development]": {
       "requires": {
         "auth": "dummy",
@@ -24,9 +27,6 @@
       }
     },
     "[production]": {
-      "folders": {
-        "app": "app/react-ui/dist"
-      },
       "requires": {
         "db": {
           "kind": "sqlite",
