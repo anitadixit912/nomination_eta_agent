@@ -33,12 +33,9 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
-      - name: nomination-eta-new-postgres
       - name: nomination-eta-new-xsuaa
       - name: nomination-eta-new-destination
       - name: nomination-eta-new-connectivity
-    properties:
-      CDS_REQUIRES_DB_KIND: "postgres"
 
   - name: nomination-eta-new-cap-ui
     type: html5
@@ -51,12 +48,6 @@ modules:
       - name: nomination-eta-new-xsuaa
 
 resources:
-
-  - name: nomination-eta-new-postgres
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: postgresql-db
-      service-plan: standard
 
   - name: nomination-eta-new-xsuaa
     type: org.cloudfoundry.managed-service
