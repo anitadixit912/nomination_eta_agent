@@ -28,6 +28,7 @@
     },
     "[production]": {
       "requires": {
+        "auth": "dummy",
         "db": {
           "kind": "sqlite",
           "credentials": { "url": "db.sqlite" }
