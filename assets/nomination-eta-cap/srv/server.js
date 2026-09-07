@@ -4,6 +4,16 @@ import { registerApiRoutes } from './api-router.js';
 import { join } from 'path';
 import { existsSync, readdirSync } from 'fs';
 
+// Deploy DB (create tables) before serving
+cds.on('before', 'served', async () => {
+  try {
+    await cds.deploy(cds.model);
+    console.log('[DB] SQLite tables deployed successfully');
+  } catch (e) {
+    console.warn('[DB] Deploy skipped or failed:', e.message);
+  }
+});
+
 cds.on('bootstrap', (app) => {
   app.use(express.json());
   registerApiRoutes(app);

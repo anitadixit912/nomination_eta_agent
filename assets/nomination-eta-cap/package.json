@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node_modules/.bin/cds deploy && node_modules/.bin/cds-serve",
+    "start": "cds-serve",
     "build": "npm run build --workspace=app/react-ui && cds build --production"
   },
   "private": true,
