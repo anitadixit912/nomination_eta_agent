@@ -5,7 +5,7 @@ import {
   FlexBox, Input, Button, Label
 } from '@ui5/webcomponents-react';
 
-const SERVICE = '/nomination-eta-service';
+const SERVICE = '/odata/v4/nomination-eta-service';
 
 function eventBadge(eventType) {
   const map = {
