@@ -3,23 +3,24 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@cap-js/postgres": "^2",
     "@sap/cds": "^10",
-    "@sap/xssec": "^4"
-  },
-  "devDependencies": {
+    "@sap/xssec": "^4",
     "@cap-js/sqlite": "^3"
   },
+  "devDependencies": {},
   "scripts": {
     "start": "cds-serve",
-    "build": "npm run build --workspace=app/react-ui && cds build --production",
-    "test": "c8 --reporter=json node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/test-report-reporter.mjs --test-reporter-destination=stdout 'test/**/*.test.js' && node ./scripts/write-test-report.mjs"
+    "build": "npm run build --workspace=app/react-ui && cds build --production"
   },
   "private": true,
   "cds": {
     "[development]": {
       "requires": {
-        "auth": "dummy"
+        "auth": "dummy",
+        "db": {
+          "kind": "sqlite",
+          "credentials": { "url": ":memory:" }
+        }
       }
     },
     "[production]": {
@@ -28,7 +29,8 @@
       },
       "requires": {
         "db": {
-          "kind": "postgres"
+          "kind": "sqlite",
+          "credentials": { "url": "db.sqlite" }
         },
         "OGS_S4": {
           "kind": "rest",
