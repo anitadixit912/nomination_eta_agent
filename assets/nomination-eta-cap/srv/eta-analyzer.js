@@ -41,7 +41,6 @@ export async function analyzeNomination(nomination) {
         'AI-Resource-Group': 'default'
       },
       body: JSON.stringify({
-        model,
         messages: [
           {
             role: 'system',
