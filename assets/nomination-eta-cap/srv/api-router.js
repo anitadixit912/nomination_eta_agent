@@ -134,27 +134,6 @@ export function registerApiRoutes(app) {
     }
   });
 
-  // ── GET /api/s4-metadata ── TEMPORARY DEBUG ───────────────
-  app.get('/api/s4-metadata', async (req, res) => {
-    try {
-      const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/$metadata', { headers: { 'Accept': 'application/xml' } });
-      res.set('Content-Type', 'text/xml');
-      res.send(typeof result === 'string' ? result : JSON.stringify(result));
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  });
-
-  // ── GET /api/s4-sample ── TEMPORARY DEBUG ─────────────────
-  app.get('/api/s4-sample', async (req, res) => {
-    try {
-      const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/C_Oij06_MyNominations?$format=json&$top=2');
-      res.json(result);
-    } catch (e) {
-      res.status(500).json({ error: e.message });
-    }
-  });
-
   // ── POST /api/fetch-nominations ───────────────────────────
   // Manually trigger a fetch from S/4HANA via BTP Destination
   app.post('/api/fetch-nominations', async (req, res) => {
