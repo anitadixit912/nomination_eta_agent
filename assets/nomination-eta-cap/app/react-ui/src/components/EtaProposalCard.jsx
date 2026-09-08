@@ -30,6 +30,16 @@ export default function EtaProposalCard({ nomination }) {
                 : '—'}
             </Title>
           </FlexBox>
+          {nomination.approvedETA && (
+            <FlexBox direction="Column">
+              <Text style={{ color: '#6e6e6e', fontSize: '0.75rem' }}>
+                {nomination.status === 'written_back' ? 'MANUAL ETA' : 'APPROVED ETA'}
+              </Text>
+              <Title level="H4" style={{ color: '#0070f2' }}>
+                {new Date(nomination.approvedETA).toLocaleString()}
+              </Title>
+            </FlexBox>
+          )}
           <FlexBox direction="Column">
             <Text style={{ color: '#6e6e6e', fontSize: '0.75rem' }}>CONFIDENCE</Text>
             <ObjectStatus state={confidenceState(nomination.confidence)}>

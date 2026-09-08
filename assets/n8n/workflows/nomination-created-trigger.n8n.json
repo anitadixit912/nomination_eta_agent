@@ -1,107 +1,147 @@
 {
-  "name": "Nomination Created — Trigger ETA Analysis",
-  "description": "Triggered when OGS/650 posts a new nomination creation event via webhook. Stores the nomination in the CAP service, invokes the ETA Orchestrator Agent (which in turn calls all three specialist agents — Historical, AIS, Geo/Weather — to produce a live weighted ETA proposal), stores the resulting proposal in CAP for supervisor review in the Approval Queue, and responds to OGS/650 confirming the analysis has been triggered. Implements REQ-01 (automatic ETA proposal on nomination creation) and M1 (nomination detected).",
-  "nodes": [
-    {
-      "id": "node-webhook",
-      "name": "Nomination Created (OGS/650)",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [240, 300],
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "nomination-created-1297bef0-e550-49aa-a409-b80878c3dc50",
-        "responseMode": "responseNode",
-        "options": {}
-      }
-    },
-    {
-      "id": "node-store-nomination",
-      "name": "Store Nomination in CAP",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [480, 300],
-      "parameters": {
-        "method": "POST",
-        "url": "https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/api/nominations",
-        "sendBody": true,
-        "contentType": "application/json",
-        "specifyBody": "json",
-        "jsonBody": "={{ { nomination_id: $json.nomination_id, material: $json.material, transport_system: $json.transport_system, origin: $json.origin, destination: $json.destination, vessel_mmsi: $json.vessel_mmsi, vessel_name: $json.vessel_name || '', vessel_imo: $json.vessel_imo || '' } }}",
-        "options": {}
-      }
-    },
-    {
-      "id": "node-invoke-agent",
-      "name": "Invoke ETA Orchestrator Agent",
-      "type": "CUSTOM.sapAgent",
-      "typeVersion": 1,
-      "position": [720, 300],
-      "parameters": {
-        "agentName": "{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"}",
-        "agents": "[{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1\",\"name\":\"Historical Nomination Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1\",\"name\":\"AIS Vessel Tracking Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1\",\"name\":\"Geo Weather Agent\"}]",
-        "chatInput": "=New nomination created in OGS/650. Analyse ETA using live OGS/650 data, live AIS vessel position from AISStream.io, and live weather/geopolitical risk. nomination_id={{ $('Nomination Created (OGS/650)').item.json.nomination_id }}, material={{ $('Nomination Created (OGS/650)').item.json.material }}, transport_system={{ $('Nomination Created (OGS/650)').item.json.transport_system }}, origin={{ $('Nomination Created (OGS/650)').item.json.origin }}, destination={{ $('Nomination Created (OGS/650)').item.json.destination }}, vessel_mmsi={{ $('Nomination Created (OGS/650)').item.json.vessel_mmsi }}, vessel_name={{ $('Nomination Created (OGS/650)').item.json.vessel_name }}. Return a structured JSON ETA proposal with proposed_eta_utc, confidence, reasoning, and supporting_evidence.",
-        "sessionId": "={{ $('Nomination Created (OGS/650)').item.json.nomination_id }}",
-        "blocking": true,
-        "additionalOptions": {
-          "timeout": 120000
+    "name": "Nomination Created — Trigger ETA Analysis",
+    "description": "Triggered when OGS/650 posts a new nomination creation event via webhook. Stores the nomination in the CAP service, invokes the ETA Orchestrator Agent (which in turn calls all three specialist agents — Historical, AIS, Geo/Weather — to produce a live weighted ETA proposal), stores the resulting proposal in CAP for supervisor review in the Approval Queue, and responds to OGS/650 confirming the analysis has been triggered. Implements REQ-01 (automatic ETA proposal on nomination creation) and M1 (nomination detected).",
+    "nodes": [
+        {
+            "id": "node-webhook",
+            "name": "Nomination Created (OGS/650)",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                240,
+                300
+            ],
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "nomination-created-1297bef0-e550-49aa-a409-b80878c3dc50",
+                "responseMode": "responseNode",
+                "options": {}
+            }
+        },
+        {
+            "id": "node-store-nomination",
+            "name": "Store Nomination in CAP",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.4,
+            "position": [
+                480,
+                300
+            ],
+            "parameters": {
+                "method": "POST",
+                "url": "https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/api/nominations",
+                "sendBody": true,
+                "contentType": "application/json",
+                "specifyBody": "json",
+                "jsonBody": "={{ { nomination_id: $json.nomination_id, material: $json.material, transport_system: $json.transport_system, origin: $json.origin, destination: $json.destination, vessel_mmsi: $json.vessel_mmsi, vessel_name: $json.vessel_name || '', vessel_imo: $json.vessel_imo || '' } }}",
+                "options": {}
+            }
+        },
+        {
+            "id": "node-invoke-agent",
+            "name": "Invoke ETA Orchestrator Agent",
+            "type": "CUSTOM.sapAgent",
+            "typeVersion": 1,
+            "position": [
+                720,
+                300
+            ],
+            "parameters": {
+                "agentName": "{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"}",
+                "agents": "[{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.nomination-eta-agent:v1\",\"name\":\"Nomination ETA Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.historical-nomination-agent:v1\",\"name\":\"Historical Nomination Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.ais-vessel-tracking-agent:v1\",\"name\":\"AIS Vessel Tracking Agent\"},{\"ordId\":\"customer.build:apiResource:nomination-eta-agent-9bb0c.geo-weather-agent:v1\",\"name\":\"Geo Weather Agent\"}]",
+                "chatInput": "=New nomination created in OGS/650. Analyse ETA using live OGS/650 data, live AIS vessel position from AISStream.io, and live weather/geopolitical risk. nomination_id={{ $('Nomination Created (OGS/650)').item.json.nomination_id }}, material={{ $('Nomination Created (OGS/650)').item.json.material }}, transport_system={{ $('Nomination Created (OGS/650)').item.json.transport_system }}, origin={{ $('Nomination Created (OGS/650)').item.json.origin }}, destination={{ $('Nomination Created (OGS/650)').item.json.destination }}, vessel_mmsi={{ $('Nomination Created (OGS/650)').item.json.vessel_mmsi }}, vessel_name={{ $('Nomination Created (OGS/650)').item.json.vessel_name }}. Return a structured JSON ETA proposal with proposed_eta_utc, confidence, reasoning, and supporting_evidence.",
+                "sessionId": "={{ $('Nomination Created (OGS/650)').item.json.nomination_id }}",
+                "blocking": true,
+                "additionalOptions": {
+                    "timeout": 120000
+                }
+            }
+        },
+        {
+            "id": "node-store-proposal",
+            "name": "Store ETA Proposal in CAP",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.4,
+            "position": [
+                960,
+                300
+            ],
+            "parameters": {
+                "method": "POST",
+                "url": "=https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/api/nominations/{{ $('Nomination Created (OGS/650)').item.json.nomination_id }}/proposal",
+                "sendBody": true,
+                "contentType": "application/json",
+                "specifyBody": "json",
+                "jsonBody": "={{ $json }}",
+                "options": {}
+            }
+        },
+        {
+            "id": "node-respond",
+            "name": "Respond to OGS/650",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.5,
+            "position": [
+                1200,
+                300
+            ],
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ { status: 'eta_analysis_triggered', nomination_id: $('Nomination Created (OGS/650)').item.json.nomination_id } }}",
+                "options": {
+                    "responseCode": 200
+                }
+            }
         }
-      }
-    },
-    {
-      "id": "node-store-proposal",
-      "name": "Store ETA Proposal in CAP",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [960, 300],
-      "parameters": {
-        "method": "POST",
-        "url": "=https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com/api/nominations/{{ $('Nomination Created (OGS/650)').item.json.nomination_id }}/proposal",
-        "sendBody": true,
-        "contentType": "application/json",
-        "specifyBody": "json",
-        "jsonBody": "={{ $json }}",
-        "options": {}
-      }
-    },
-    {
-      "id": "node-respond",
-      "name": "Respond to OGS/650",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.5,
-      "position": [1200, 300],
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={{ { status: 'eta_analysis_triggered', nomination_id: $('Nomination Created (OGS/650)').item.json.nomination_id } }}",
-        "options": {
-          "responseCode": 200
+    ],
+    "connections": {
+        "Nomination Created (OGS/650)": {
+            "main": [
+                [
+                    {
+                        "node": "Store Nomination in CAP",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Nomination in CAP": {
+            "main": [
+                [
+                    {
+                        "node": "Invoke ETA Orchestrator Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Invoke ETA Orchestrator Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Store ETA Proposal in CAP",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store ETA Proposal in CAP": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to OGS/650",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
         }
-      }
-    }
-  ],
-  "connections": {
-    "Nomination Created (OGS/650)": {
-      "main": [
-        [{ "node": "Store Nomination in CAP", "type": "main", "index": 0 }]
-      ]
     },
-    "Store Nomination in CAP": {
-      "main": [
-        [{ "node": "Invoke ETA Orchestrator Agent", "type": "main", "index": 0 }]
-      ]
+    "settings": {
+        "executionOrder": "v1"
     },
-    "Invoke ETA Orchestrator Agent": {
-      "main": [
-        [{ "node": "Store ETA Proposal in CAP", "type": "main", "index": 0 }]
-      ]
-    },
-    "Store ETA Proposal in CAP": {
-      "main": [
-        [{ "node": "Respond to OGS/650", "type": "main", "index": 0 }]
-      ]
-    }
-  },
-  "settings": {
-    "executionOrder": "v1"
-  }
+    "id": "t8SFESviEEAdObvb"
 }
