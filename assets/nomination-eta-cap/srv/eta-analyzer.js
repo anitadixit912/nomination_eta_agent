@@ -13,22 +13,26 @@ export async function analyzeNomination(nomination) {
     const destinationName = process.env.AICORE_DESTINATION_NAME || 'aicore';
     const model = process.env.AGENT_LLM_MODEL || 'gpt-4o';
 
-    // First get list of deployments
+    // Get list of deployments from default resource group
     const deploymentsResponse = await callViaDestination(destinationName, '/v2/lm/deployments', {
       method: 'GET',
       headers: { 'AI-Resource-Group': 'default' }
     });
 
-    LOG.info(`AI Core deployments response: ${JSON.stringify(deploymentsResponse)?.substring(0, 200)}`);
+    // Find a running foundation-models deployment matching the configured model
+    const deployments = deploymentsResponse?.resources || [];
+    const runningDeployments = deployments.filter(d => d.status === 'RUNNING' && d.scenarioId === 'foundation-models');
 
-    // Find a running deployment
-    const deployments = deploymentsResponse?.resources || deploymentsResponse?.value || [];
-    const runningDeployment = deployments.find(d => d.status === 'RUNNING');
+    // Prefer matching model name, fallback to gpt-4o, fallback to first running
+    const modelName = model.replace('gpt-4o', 'gpt-4o'); // normalize
+    let deployment = runningDeployments.find(d => d.details?.resources?.backendDetails?.model?.name === modelName)
+      || runningDeployments.find(d => d.details?.resources?.backendDetails?.model?.name === 'gpt-4o')
+      || runningDeployments[0];
 
-    if (!runningDeployment) throw new Error(`No running deployments found. Available: ${JSON.stringify(deployments)?.substring(0, 200)}`);
+    if (!deployment) throw new Error(`No running foundation-models deployments found`);
 
-    const deploymentId = runningDeployment.id;
-    LOG.info(`Using deployment: ${deploymentId}`);
+    const deploymentId = deployment.id;
+    LOG.info(`Using deployment: ${deploymentId} (model: ${deployment.details?.resources?.backendDetails?.model?.name})`);
 
     const chatResponse = await callViaDestination(destinationName, `/v2/inference/deployments/${deploymentId}/chat/completions`, {
       method: 'POST',
