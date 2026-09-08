@@ -12,7 +12,8 @@ async function fetchNominationsFromS4() {
     LOG.info(`Fetched ${nominations.length} open nominations from S/4HANA`);
     const { NominationETA } = cds.db.model.entities('eta');
     for (const n of nominations) {
-      const nominationId = `${n.NominationDoc}-${n.NominationDocItem}`;
+      const extNum = n.NominationExtNumber || n.NominationDoc;
+      const nominationId = `${extNum}-${n.NominationDocItem}`;
       if (!n.NominationDoc) continue;
       const existing = await SELECT.one.from(NominationETA).where({ nominationId });
       if (!existing) {

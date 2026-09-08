@@ -144,7 +144,9 @@ export function registerApiRoutes(app) {
 
       for (const n of nominations) {
         // Unique ID: NominationDoc-NominationDocItem (e.g. "1-10")
-        const nominationId = `${n.NominationDoc}-${n.NominationDocItem}`;
+        // Use external nomination number + item as the human-readable ID
+        const extNum = n.NominationExtNumber || n.NominationDoc;
+        const nominationId = `${extNum}-${n.NominationDocItem}`;
         if (!n.NominationDoc) continue;
         const existing = await SELECT.one.from(NominationETA).where({ nominationId });
         if (!existing) {
