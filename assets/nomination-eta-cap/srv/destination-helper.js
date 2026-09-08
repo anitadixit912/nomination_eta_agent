@@ -55,6 +55,10 @@ async function getToken(tokenUrl, clientid, clientsecret) {
 }
 
 // Fetch destination config from BTP Destination Service
+export async function getDestinationConfig(name) {
+  return getDestination(name);
+}
+
 async function getDestination(name) {
   const creds = getVcapCreds('destination');
   const token = await getToken(`${creds.url}/oauth/token`, creds.clientid, creds.clientsecret);

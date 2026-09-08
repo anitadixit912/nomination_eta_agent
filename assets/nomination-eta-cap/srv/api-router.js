@@ -170,6 +170,22 @@ export function registerApiRoutes(app) {
     }
   });
 
+  // ── GET /api/aicore-debug ── TEMPORARY DEBUG ────────
+  app.get('/api/aicore-debug', async (req, res) => {
+    try {
+      const { getDestinationConfig } = await import('./destination-helper.js');
+      const dest = await getDestinationConfig('aicore');
+      res.json({
+        url: dest.destinationConfiguration?.URL || dest.destinationConfiguration?.Url,
+        auth: dest.destinationConfiguration?.Authentication,
+        hasToken: !!dest.authTokens?.[0]?.value,
+        tokenType: dest.authTokens?.[0]?.type
+      });
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ── GET /api/aicore-deployments ── TEMPORARY DEBUG ────────
   app.get('/api/aicore-deployments', async (req, res) => {
     try {
