@@ -1,0 +1,15 @@
+applications:
+  - name: nomination-eta-agent
+    buildpacks:
+      - python_buildpack
+    path: .
+    command: python app/main.py
+    memory: 512M
+    disk_quota: 1024M
+    instances: 1
+    env:
+      PORT: 8080
+      HISTORICAL_AGENT_URL: https://historical-nomination-agent.cfapps.us10.hana.ondemand.com
+      AIS_AGENT_URL: https://ais-vessel-tracking-agent.cfapps.us10.hana.ondemand.com
+      GEO_WEATHER_AGENT_URL: https://geo-weather-agent.cfapps.us10.hana.ondemand.com
+      CAP_SERVICE_URL: https://gdh-prj-vector-hackathon-apac-dev10-4dixnr9o-dev-nomina74ce89c1.cfapps.us10.hana.ondemand.com
