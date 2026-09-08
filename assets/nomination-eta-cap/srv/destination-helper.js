@@ -105,5 +105,6 @@ export async function callViaDestination(destinationName, path, options = {}) {
   });
 
   if (res.status >= 400) throw new Error(`HTTP ${res.status} from ${url}: ${res.text.substring(0, 300)}`);
-  return JSON.parse(res.text);
+  // Return raw text if not JSON
+  try { return JSON.parse(res.text); } catch { return res.text; }
 }
