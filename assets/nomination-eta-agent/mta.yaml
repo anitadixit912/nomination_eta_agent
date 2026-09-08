@@ -1,0 +1,42 @@
+_schema-version: "3.1"
+ID: nomination-eta-agent
+version: 1.0.0
+description: "Nomination ETA Orchestrator Agent - coordinates specialist agents to produce ETA proposals"
+
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+
+  - name: nomination-eta-agent-srv
+    type: python
+    path: .
+    parameters:
+      buildpack: python_buildpack
+      memory: 512M
+      disk-quota: 1024M
+      instances: 1
+      command: python app/main.py
+    properties:
+      PORT: 8080
+      HISTORICAL_AGENT_URL: ~{historical-agent/agent-url}
+      AIS_AGENT_URL: ~{ais-agent/agent-url}
+      GEO_WEATHER_AGENT_URL: ~{geo-weather-agent/agent-url}
+      CAP_SERVICE_URL: ~{cap-srv/srv-url}
+    requires:
+      - name: historical-agent
+      - name: ais-agent
+      - name: geo-weather-agent
+      - name: cap-srv
+      - name: nomination-eta-aicore
+    provides:
+      - name: nomination-eta-agent
+        properties:
+          agent-url: ${default-url}
+
+resources:
+  - name: nomination-eta-aicore
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: extended

@@ -1,0 +1,36 @@
+_schema-version: "3.1"
+ID: historical-nomination-agent
+version: 1.0.0
+description: "Historical Nomination Agent - analyses historical voyage patterns"
+
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+
+  - name: historical-nomination-agent-srv
+    type: python
+    path: .
+    parameters:
+      buildpack: python_buildpack
+      memory: 512M
+      disk-quota: 1024M
+      instances: 1
+      command: python app/main.py
+    properties:
+      PORT: 8080
+      CAP_SERVICE_URL: ~{cap-srv/srv-url}
+    requires:
+      - name: cap-srv
+      - name: historical-nomination-aicore
+    provides:
+      - name: historical-agent
+        properties:
+          agent-url: ${default-url}
+
+resources:
+  - name: historical-nomination-aicore
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: aicore
+      service-plan: extended
