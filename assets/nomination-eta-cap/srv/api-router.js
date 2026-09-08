@@ -11,7 +11,7 @@ const LOG = cds.log('api-router');
 export async function _fetchFromS4() {
   const response = await callViaDestination(
     'OGS_S4',
-    '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/NominationSet?$filter=Status%20eq%20%27OPEN%27&$format=json'
+    '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/C_Oij06_MyNominations?$format=json&$top=100'
   );
   return response?.d?.results || [];
 }
@@ -140,6 +140,16 @@ export function registerApiRoutes(app) {
       const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/$metadata', { headers: { 'Accept': 'application/xml' } });
       res.set('Content-Type', 'text/xml');
       res.send(typeof result === 'string' ? result : JSON.stringify(result));
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ── GET /api/s4-sample ── TEMPORARY DEBUG ─────────────────
+  app.get('/api/s4-sample', async (req, res) => {
+    try {
+      const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/C_Oij06_MyNominations?$format=json&$top=2');
+      res.json(result);
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
