@@ -5,7 +5,8 @@
   "dependencies": {
     "@sap/cds": "^10",
     "@sap/xssec": "^4",
-    "@cap-js/sqlite": "^3"
+    "@cap-js/sqlite": "^3",
+    "undici": "^6"
   },
   "devDependencies": {},
   "scripts": {
