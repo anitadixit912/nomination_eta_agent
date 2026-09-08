@@ -12,9 +12,8 @@ modules:
       memory: 512M
       disk-quota: 1024M
       instances: 1
-      command: python app/main.py
+      command: python app/main.py --port $PORT
     properties:
-      PORT: "8080"
       HISTORICAL_AGENT_URL: https://historical-nomination-agent-new.cfapps.us10.hana.ondemand.com
       AIS_AGENT_URL: https://ais-vessel-tracking-agent-new.cfapps.us10.hana.ondemand.com
       GEO_WEATHER_AGENT_URL: https://geo-weather-agent-new.cfapps.us10.hana.ondemand.com

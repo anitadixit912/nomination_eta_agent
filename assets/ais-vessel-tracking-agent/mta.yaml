@@ -12,9 +12,8 @@ modules:
       memory: 512M
       disk-quota: 1024M
       instances: 1
-      command: python app/main.py
-    properties:
-      PORT: "8080"
+      command: python app/main.py --port $PORT
+
     provides:
       - name: ais-agent
         properties:
