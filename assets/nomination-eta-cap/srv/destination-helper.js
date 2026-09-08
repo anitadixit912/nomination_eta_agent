@@ -2,10 +2,9 @@
  * Helper to call BTP Destination Service directly
  * Resolves destination URL + auth token, then makes HTTP call
  */
-import https from 'https';
 
-// Reusable HTTPS agent that tolerates self-signed certs on BTP
-const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+// Disable TLS verification for BTP internal calls
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // Get destination service credentials from VCAP_SERVICES
 function getDestinationServiceCredentials() {
@@ -24,8 +23,7 @@ async function getAccessToken(credentials) {
   const res = await fetch(tokenUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
-    agent: httpsAgent
+    body
   });
   const data = await res.json();
   if (!data.access_token) throw new Error(`Token fetch failed: ${JSON.stringify(data)}`);
@@ -39,10 +37,7 @@ async function getDestination(destinationName) {
 
   const res = await fetch(
     `${creds.uri}/destination-configuration/v1/destinations/${destinationName}`,
-    {
-      headers: { 'Authorization': `Bearer ${token}` },
-      agent: httpsAgent
-    }
+    { headers: { 'Authorization': `Bearer ${token}` } }
   );
 
   if (!res.ok) {
@@ -77,8 +72,7 @@ export async function callViaDestination(destinationName, path, options = {}) {
   const res = await fetch(url, {
     method: options.method || 'GET',
     headers,
-    body: options.body,
-    agent: httpsAgent
+    body: options.body
   });
 
   if (!res.ok) {

@@ -95,8 +95,9 @@ export default function ApprovalQueue() {
 
   const handleManualOverride = async () => {
     if (!manualEta) { alert('Please select a date'); return; }
-    const isoDate = new Date(manualEta + 'T12:00:00Z').toISOString();
-    if (!isoDate || isoDate === 'Invalid Date') { alert('Invalid date. Use YYYY-MM-DD format.'); return; }
+    // CDS DateTime requires format: YYYY-MM-DDTHH:mm:ss (no Z, no milliseconds)
+    const isoDate = `${manualEta}T12:00:00`;
+    if (!manualEta.match(/^\d{4}-\d{2}-\d{2}$/)) { alert('Invalid date selected.'); return; }
 
     const res = await fetch(`${SERVICE}/manualOverrideETA`, {
       method: 'POST',
