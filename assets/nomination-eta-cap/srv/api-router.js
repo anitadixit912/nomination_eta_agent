@@ -7,6 +7,52 @@ import { callViaDestination } from './destination-helper.js';
 
 const LOG = cds.log('api-router');
 
+// Call the ETA Orchestrator Agent to analyse a nomination
+async function triggerEtaAgent(nomination) {
+  const agentUrl = process.env.NOMINATION_ETA_AGENT_URL;
+  if (!agentUrl) {
+    LOG.warn('NOMINATION_ETA_AGENT_URL not set — skipping AI ETA analysis');
+    return;
+  }
+  try {
+    const { request } = await import('http');
+    const payload = JSON.stringify({
+      jsonrpc: '2.0', id: nomination.nominationId, method: 'tasks/send',
+      params: {
+        id: nomination.nominationId,
+        message: {
+          role: 'user',
+          parts: [{
+            type: 'text',
+            text: `Analyse ETA for nomination: nomination_id=${nomination.nominationId}, material=${nomination.material}, transport_system=${nomination.transportSystem}, origin=${nomination.origin}, destination=${nomination.destination}, vessel_id=${nomination.vesselMMSI}, vessel_name=${nomination.vesselName}. Return structured JSON ETA proposal.`
+          }]
+        }
+      }
+    });
+    const url = new URL('/a2a', agentUrl);
+    const options = {
+      hostname: url.hostname, port: url.port || 80,
+      path: url.pathname, method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }
+    };
+    await new Promise((resolve, reject) => {
+      const req = request(options, (res) => {
+        let data = '';
+        res.on('data', chunk => { data += chunk; });
+        res.on('end', () => {
+          LOG.info(`ETA agent triggered for ${nomination.nominationId}: ${res.statusCode}`);
+          resolve(data);
+        });
+      });
+      req.on('error', reject);
+      req.write(payload);
+      req.end();
+    });
+  } catch (e) {
+    LOG.warn(`ETA agent call failed for ${nomination.nominationId}: ${e.message}`);
+  }
+}
+
 // Shared function to fetch open nominations from S/4HANA
 export async function _fetchFromS4() {
   const response = await callViaDestination(
@@ -156,7 +202,7 @@ export function registerApiRoutes(app) {
             const m = String(d).match(/\/Date\((\d+)/);
             return m ? new Date(parseInt(m[1])).toISOString() : null;
           };
-          await INSERT.into(NominationETA).entries({
+          const newNom = {
             nominationId,
             material: n.MaterialDesc || n.ScheduledMaterial || '',
             transportSystem: n.TransportSystem || '',
@@ -165,8 +211,11 @@ export function registerApiRoutes(app) {
             vesselMMSI: n.VehicleId || '',
             vesselName: n.VehicleDescription || '',
             status: 'proposed'
-          });
+          };
+          await INSERT.into(NominationETA).entries(newNom);
           created++;
+          // Trigger AI agent asynchronously — don't wait
+          triggerEtaAgent(newNom).catch(() => {});
         }
       }
 

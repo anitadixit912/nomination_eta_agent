@@ -30,6 +30,8 @@ modules:
         - npm install --production
         - node -e "const fs=require('fs');const src='../../app/react-ui/dist';const dst='app';if(fs.existsSync(src)){fs.mkdirSync(dst,{recursive:true});fs.cpSync(src,dst,{recursive:true});console.log('UI copied to app/');}else{console.error('Source not found:',src);}"
 
+    properties:
+      NOMINATION_ETA_AGENT_URL: ~{nomination-eta-agent/agent-url}
     provides:
       - name: srv-api
         properties:
@@ -38,6 +40,7 @@ modules:
       - name: nomination-eta-new-xsuaa
       - name: nomination-eta-new-destination
       - name: nomination-eta-new-connectivity
+      - name: nomination-eta-agent
 
 resources:
 
