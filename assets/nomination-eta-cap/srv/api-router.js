@@ -189,10 +189,20 @@ export function registerApiRoutes(app) {
   // ── GET /api/aicore-deployments ── TEMPORARY DEBUG ────────
   app.get('/api/aicore-deployments', async (req, res) => {
     try {
-      const result = await callViaDestination('aicore', '/v2/inference/deployments', {
-        headers: { 'AI-Resource-Group': 'default' }
-      });
-      res.json(result);
+      // Try multiple resource groups to find the right one
+      const groups = ['default', 'genai', 'public', 'foundation-models'];
+      const results = {};
+      for (const group of groups) {
+        try {
+          const result = await callViaDestination('aicore', '/v2/inference/deployments', {
+            headers: { 'AI-Resource-Group': group }
+          });
+          results[group] = result;
+        } catch (e) {
+          results[group] = { error: e.message };
+        }
+      }
+      res.json(results);
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
