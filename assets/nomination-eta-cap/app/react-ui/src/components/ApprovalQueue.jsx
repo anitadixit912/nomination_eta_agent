@@ -50,15 +50,8 @@ export default function ApprovalQueue() {
 
   useEffect(() => { load(); }, [load]);
 
-  const openProposal = async (nom) => {
-    // Fetch detail record with all evidence
-    try {
-      const res = await fetch(`${SERVICE}/NominationETADetail?$filter=nominationId eq '${nom.nominationId}'`);
-      const data = await res.json();
-      setSelected(data.value?.[0] || nom);
-    } catch {
-      setSelected(nom);
-    }
+  const openProposal = (nom) => {
+    setSelected(nom);
     setShowProposal(true);
     setShowAlternatives(nom.status === 'rejected' && nom.alternatives);
   };
@@ -213,13 +206,13 @@ export default function ApprovalQueue() {
                       </Button>
                     </>
                   )}
-                  {selected.status === 'rejected' && (
+                  {(selected.status === 'rejected' || selected.status === 'written_back') && (
                     <Button
                       design="Attention"
                       onClick={() => setManualDialog(true)}
                       style={{ marginRight: '0.5rem' }}
                     >
-                      Enter Manual ETA
+                      {selected.status === 'written_back' ? 'Update Manual ETA' : 'Enter Manual ETA'}
                     </Button>
                   )}
                   <Button onClick={() => setShowProposal(false)}>Close</Button>
