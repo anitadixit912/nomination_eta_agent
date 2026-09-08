@@ -1,14 +1,10 @@
 _schema-version: "3.1"
-ID: ais-vessel-tracking-agent
+ID: ais-vessel-tracking-agent-new
 version: 1.0.0
 description: "AIS Vessel Tracking Agent - tracks live vessel positions"
 
-parameters:
-  enable-parallel-deployments: true
-
 modules:
-
-  - name: ais-vessel-tracking-agent-srv
+  - name: ais-vessel-tracking-agent-new
     type: python
     path: .
     parameters:
@@ -18,19 +14,8 @@ modules:
       instances: 1
       command: python app/main.py
     properties:
-      PORT: 8080
-      CAP_SERVICE_URL: ~{cap-srv/srv-url}
-    requires:
-      - name: cap-srv
-      - name: ais-vessel-aicore
+      PORT: "8080"
     provides:
       - name: ais-agent
         properties:
           agent-url: ${default-url}
-
-resources:
-  - name: ais-vessel-aicore
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: aicore
-      service-plan: extended

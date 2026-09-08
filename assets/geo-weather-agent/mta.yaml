@@ -1,14 +1,10 @@
 _schema-version: "3.1"
-ID: geo-weather-agent
+ID: geo-weather-agent-new
 version: 1.0.0
 description: "Geo Weather Agent - assesses geopolitical and weather risks for routes"
 
-parameters:
-  enable-parallel-deployments: true
-
 modules:
-
-  - name: geo-weather-agent-srv
+  - name: geo-weather-agent-new
     type: python
     path: .
     parameters:
@@ -18,19 +14,8 @@ modules:
       instances: 1
       command: python app/main.py
     properties:
-      PORT: 8080
-      CAP_SERVICE_URL: ~{cap-srv/srv-url}
-    requires:
-      - name: cap-srv
-      - name: geo-weather-aicore
+      PORT: "8080"
     provides:
       - name: geo-weather-agent
         properties:
           agent-url: ${default-url}
-
-resources:
-  - name: geo-weather-aicore
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: aicore
-      service-plan: extended
