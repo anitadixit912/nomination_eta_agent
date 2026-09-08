@@ -3,8 +3,18 @@
  * with /api/* routes used by the ETA Orchestrator and n8n workflows.
  */
 import cds from '@sap/cds';
+import { callViaDestination } from './destination-helper.js';
 
 const LOG = cds.log('api-router');
+
+// Shared function to fetch open nominations from S/4HANA
+export async function _fetchFromS4() {
+  const response = await callViaDestination(
+    'OGS_S4',
+    '/sap/opu/odata/sap/OIL_TSW_NOMINAT_SRV/NominationSet?$filter=Status%20eq%20%27OPEN%27&$format=json'
+  );
+  return response?.d?.results || [];
+}
 
 export function registerApiRoutes(app) {
 
@@ -125,17 +135,10 @@ export function registerApiRoutes(app) {
   });
 
   // ── POST /api/fetch-nominations ───────────────────────────
-  // Manually trigger a fetch from S/4HANA
+  // Manually trigger a fetch from S/4HANA via BTP Destination
   app.post('/api/fetch-nominations', async (req, res) => {
     try {
-      const dest = await cds.connect.to('OGS_S4');
-      const response = await dest.send({
-        method: 'GET',
-        path: '/sap/opu/odata/sap/OIL_TSW_NOMINAT_SRV/NominationSet?$filter=Status eq \'OPEN\'&$format=json',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      const nominations = response?.d?.results || [];
+      const nominations = await _fetchFromS4();
       const { NominationETA } = cds.db.model.entities('eta');
       let created = 0;
 

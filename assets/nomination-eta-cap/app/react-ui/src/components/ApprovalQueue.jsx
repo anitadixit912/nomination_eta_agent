@@ -50,10 +50,18 @@ export default function ApprovalQueue() {
 
   useEffect(() => { load(); }, [load]);
 
-  const openProposal = (nom) => {
-    setSelected(nom);
+  const openProposal = async (nom) => {
+    try {
+      const res = await fetch(`${SERVICE}/NominationETA?$filter=nominationId eq '${nom.nominationId}'`);
+      const data = await res.json();
+      const fresh = data.value?.[0] || nom;
+      setSelected(fresh);
+      setShowAlternatives(fresh.status === 'rejected' && fresh.alternatives);
+    } catch {
+      setSelected(nom);
+      setShowAlternatives(nom.status === 'rejected' && nom.alternatives);
+    }
     setShowProposal(true);
-    setShowAlternatives(nom.status === 'rejected' && nom.alternatives);
   };
 
   const handleApprove = async (nom) => {
@@ -98,8 +106,8 @@ export default function ApprovalQueue() {
     });
     setManualDialog(false);
     setManualEta('');
-    setShowProposal(false);
     await load();
+    setShowProposal(false);
   };
 
   const handleRefresh = async (nom) => {
