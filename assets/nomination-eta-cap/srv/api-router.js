@@ -124,6 +124,48 @@ export function registerApiRoutes(app) {
     }
   });
 
+  // ── POST /api/fetch-nominations ───────────────────────────
+  // Manually trigger a fetch from S/4HANA
+  app.post('/api/fetch-nominations', async (req, res) => {
+    try {
+      const dest = await cds.connect.to('OGS_S4');
+      const response = await dest.send({
+        method: 'GET',
+        path: '/sap/opu/odata/sap/OIL_TSW_NOMINAT_SRV/NominationSet?$filter=Status eq \'OPEN\'&$format=json',
+        headers: { 'Accept': 'application/json' }
+      });
+
+      const nominations = response?.d?.results || [];
+      const { NominationETA } = cds.db.model.entities('eta');
+      let created = 0;
+
+      for (const n of nominations) {
+        const nominationId = n.NominationID || n.Nomination || n.ID;
+        if (!nominationId) continue;
+        const existing = await SELECT.one.from(NominationETA).where({ nominationId });
+        if (!existing) {
+          await INSERT.into(NominationETA).entries({
+            nominationId,
+            material: n.Material || n.MaterialDescription || '',
+            transportSystem: n.TransportationSystem || n.TranspSystem || '',
+            origin: n.LoadingLocation || n.OriginLocation || '',
+            destination: n.DischargeLocation || n.DestinationLocation || '',
+            vesselMMSI: n.VesselMMSI || n.Vessel || '',
+            vesselName: n.VesselName || '',
+            status: 'proposed'
+          });
+          created++;
+        }
+      }
+
+      LOG.info(`Manual fetch: ${nominations.length} found, ${created} new nominations created`);
+      res.json({ fetched: nominations.length, created });
+    } catch (e) {
+      LOG.error('Manual S/4HANA fetch failed:', e.message);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ── POST /api/audit ────────────────────────────────────────
   // Called by agents to write audit log entries directly
   app.post('/api/audit', async (req, res) => {

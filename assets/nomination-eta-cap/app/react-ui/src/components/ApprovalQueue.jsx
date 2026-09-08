@@ -107,6 +107,23 @@ export default function ApprovalQueue() {
     await load();
   };
 
+  const handleFetchFromS4 = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/fetch-nominations', { method: 'POST' });
+      const data = await res.json();
+      if (data.error) {
+        alert(`Failed to fetch from S/4HANA: ${data.error}`);
+      } else {
+        alert(`Fetched ${data.fetched} nominations, ${data.created} new added.`);
+      }
+    } catch (e) {
+      alert('Failed to connect to S/4HANA');
+    } finally {
+      await load();
+    }
+  };
+
   const handleAlternativeSelect = async (alt) => {
     await fetch(`${SERVICE}/approveETA`, {
       method: 'POST',
@@ -125,7 +142,10 @@ export default function ApprovalQueue() {
     <div>
       <FlexBox justifyContent="SpaceBetween" alignItems="Center" style={{ marginBottom: '1rem' }}>
         <Title level="H3">Nomination ETA Approval Queue</Title>
-        <Button icon="refresh" onClick={load}>Refresh</Button>
+        <FlexBox style={{ gap: '0.5rem' }}>
+          <Button icon="download-from-cloud" design="Emphasized" onClick={handleFetchFromS4}>Fetch from S/4HANA</Button>
+          <Button icon="refresh" onClick={load}>Refresh</Button>
+        </FlexBox>
       </FlexBox>
 
       {loading ? (

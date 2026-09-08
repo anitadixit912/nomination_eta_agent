@@ -4,6 +4,47 @@ import { registerApiRoutes } from './api-router.js';
 import { join } from 'path';
 import { existsSync, readdirSync } from 'fs';
 
+// ── Fetch open nominations from S/4HANA OGS/650 ──────────────
+async function fetchNominationsFromS4() {
+  const LOG = cds.log('s4-poller');
+  try {
+    const dest = await cds.connect.to('OGS_S4');
+    const response = await dest.send({
+      method: 'GET',
+      path: '/sap/opu/odata/sap/OIL_TSW_NOMINAT_SRV/NominationSet?$filter=Status eq \'OPEN\'&$format=json',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    const nominations = response?.d?.results || [];
+    LOG.info(`Fetched ${nominations.length} open nominations from S/4HANA`);
+
+    const { NominationETA } = cds.db.model.entities('eta');
+    for (const n of nominations) {
+      const nominationId = n.NominationID || n.Nomination || n.ID;
+      if (!nominationId) continue;
+
+      const existing = await SELECT.one.from(NominationETA).where({ nominationId });
+      if (!existing) {
+        await INSERT.into(NominationETA).entries({
+          nominationId,
+          material: n.Material || n.MaterialDescription || '',
+          transportSystem: n.TransportationSystem || n.TranspSystem || '',
+          origin: n.LoadingLocation || n.OriginLocation || '',
+          destination: n.DischargeLocation || n.DestinationLocation || '',
+          vesselMMSI: n.VesselMMSI || n.Vessel || '',
+          vesselName: n.VesselName || '',
+          status: 'proposed'
+        });
+        LOG.info(`Created nomination: ${nominationId}`);
+      }
+    }
+    return nominations.length;
+  } catch (e) {
+    cds.log('s4-poller').warn('S/4HANA fetch failed:', e.message);
+    return 0;
+  }
+}
+
 cds.on('served', async () => {
   // Seed sample data only when the table is empty (e.g. fresh SQLite DB)
   try {
@@ -37,6 +78,19 @@ cds.on('served', async () => {
   } catch (e) {
     cds.log('server').warn('Seed data skipped:', e.message);
   }
+
+  // Start polling S/4HANA every 30 minutes
+  const POLL_INTERVAL_MS = 30 * 60 * 1000;
+  setInterval(async () => {
+    cds.log('s4-poller').info('Polling S/4HANA for open nominations...');
+    await fetchNominationsFromS4();
+  }, POLL_INTERVAL_MS);
+
+  // Also poll once on startup (after 10 seconds)
+  setTimeout(async () => {
+    cds.log('s4-poller').info('Initial S/4HANA poll on startup...');
+    await fetchNominationsFromS4();
+  }, 10000);
 });
 
 cds.on('bootstrap', (app) => {
