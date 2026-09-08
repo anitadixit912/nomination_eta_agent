@@ -12,6 +12,5 @@ assets:
   - ref: ./assets/geo-weather-agent/asset.yaml
   - ref: ./assets/nomination-eta-agent/asset.yaml
   - ref: ./assets/nomination-eta-cap/asset.yaml
-  - ref: ./assets/n8n/asset.yaml
   - ref: ./assets/sap-sf-scm-nomination-mcp-server/asset.yaml
   - ref: ./assets/sap-s4-oil-transport-system-mcp-server/asset.yaml

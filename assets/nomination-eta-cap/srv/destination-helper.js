@@ -1,85 +1,91 @@
 /**
- * Helper to call BTP Destination Service directly
- * Uses undici Agent to bypass TLS (Node.js built-in fetch uses undici)
+ * BTP Destination Service helper using Node.js https module directly.
+ * Bypasses SSL verification for BTP internal service calls.
  */
-import { Agent, setGlobalDispatcher, fetch as undiciFetch } from 'undici';
+import https from 'https';
+import http from 'http';
 
-// Configure undici to skip TLS verification for BTP internal calls
-setGlobalDispatcher(new Agent({ connect: { rejectUnauthorized: false } }));
-
-// Get destination service credentials from VCAP_SERVICES
-function getDestinationServiceCredentials() {
-  const vcap = JSON.parse(process.env.VCAP_SERVICES || '{}');
-  const destService = vcap['destination']?.[0]?.credentials;
-  if (!destService) throw new Error('Destination service not bound');
-  return destService;
+// Core HTTP request using Node.js built-in — supports rejectUnauthorized
+function request(url, options = {}) {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const lib = parsed.protocol === 'https:' ? https : http;
+    const opts = {
+      hostname: parsed.hostname,
+      port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+      path: parsed.pathname + parsed.search,
+      method: options.method || 'GET',
+      headers: options.headers || {},
+      rejectUnauthorized: false
+    };
+    const req = lib.request(opts, (res) => {
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => resolve({ status: res.statusCode, text: data }));
+    });
+    req.on('error', reject);
+    if (options.body) req.write(options.body);
+    req.end();
+  });
 }
 
-// Get OAuth token for destination service
-async function getAccessToken(credentials) {
-  const { clientid, clientsecret, url } = credentials;
-  if (!url) throw new Error('No XSUAA url in destination credentials');
-  const tokenUrl = `${url}/oauth/token`;
-  const body = `grant_type=client_credentials&client_id=${encodeURIComponent(clientid)}&client_secret=${encodeURIComponent(clientsecret)}`;
+// Get destination service credentials from VCAP_SERVICES
+function getDestCreds() {
+  const vcap = JSON.parse(process.env.VCAP_SERVICES || '{}');
+  const creds = vcap['destination']?.[0]?.credentials;
+  if (!creds) throw new Error('Destination service not bound to app');
+  return creds;
+}
 
-  const res = await undiciFetch(tokenUrl, {
+// Get OAuth token from XSUAA for destination service
+async function getToken(creds) {
+  const url = `${creds.url}/oauth/token?grant_type=client_credentials`;
+  const auth = Buffer.from(`${creds.clientid}:${creds.clientsecret}`).toString('base64');
+  const res = await request(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'grant_type=client_credentials'
   });
-  const data = await res.json();
-  if (!data.access_token) throw new Error(`Token fetch failed: ${JSON.stringify(data)}`);
+  const data = JSON.parse(res.text);
+  if (!data.access_token) throw new Error(`Token error: ${res.text}`);
   return data.access_token;
 }
 
-// Fetch destination details from BTP Destination Service
-async function getDestination(destinationName) {
-  const creds = getDestinationServiceCredentials();
-  const token = await getAccessToken(creds);
-
-  const res = await undiciFetch(
-    `${creds.uri}/destination-configuration/v1/destinations/${destinationName}`,
+// Fetch destination config from BTP Destination Service
+async function getDestination(name) {
+  const creds = getDestCreds();
+  const token = await getToken(creds);
+  const res = await request(
+    `${creds.uri}/destination-configuration/v1/destinations/${name}`,
     { headers: { 'Authorization': `Bearer ${token}` } }
   );
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Destination '${destinationName}' lookup failed (${res.status}): ${text}`);
-  }
-  return await res.json();
+  if (res.status !== 200) throw new Error(`Destination '${name}' not found: ${res.status} ${res.text}`);
+  return JSON.parse(res.text);
 }
 
-// Make an authenticated HTTP call via a BTP destination
+// Make HTTP call via BTP destination
 export async function callViaDestination(destinationName, path, options = {}) {
   const dest = await getDestination(destinationName);
   const baseUrl = dest.destinationConfiguration?.URL || dest.destinationConfiguration?.Url;
-  if (!baseUrl) throw new Error(`Destination '${destinationName}' has no URL configured`);
+  if (!baseUrl) throw new Error(`Destination '${destinationName}' has no URL`);
 
   const url = `${baseUrl}${path}`;
   const authType = dest.destinationConfiguration?.Authentication;
   const headers = { 'Accept': 'application/json', ...(options.headers || {}) };
 
-  // Basic Auth
   if (authType === 'BasicAuthentication') {
     const user = dest.destinationConfiguration?.User;
     const pass = dest.destinationConfiguration?.Password;
     headers['Authorization'] = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
   }
-
-  // Token-based auth (OAuth, Principal Propagation)
   if (dest.authTokens?.[0]?.value) {
     headers['Authorization'] = `${dest.authTokens[0].type || 'Bearer'} ${dest.authTokens[0].value}`;
   }
 
-  const res = await undiciFetch(url, {
-    method: options.method || 'GET',
-    headers,
-    body: options.body
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HTTP ${res.status} from ${url}: ${text.substring(0, 300)}`);
-  }
-  return await res.json();
+  const res = await request(url, { method: options.method || 'GET', headers, body: options.body });
+  if (res.status >= 400) throw new Error(`HTTP ${res.status} from ${url}: ${res.text.substring(0, 300)}`);
+  return JSON.parse(res.text);
 }

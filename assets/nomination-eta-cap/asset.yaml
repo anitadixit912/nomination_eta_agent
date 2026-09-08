@@ -5,44 +5,12 @@ type: cap-app
 metadata:
   name: nomination-eta-cap
   version: "1.0.0"
+  description: "CAP Node.js backend with React UI. Handles nomination ETA approval queue, polls S/4HANA OGS/650 directly for open nominations every 30 minutes, and exposes REST + OData APIs."
 
 provides:
   protocols:
     - odata-v4
     - rest
-
-components:
-  - name: srv
-    type: srv
-    buildPath: .
-    port: 4004
-    provides:
-      endpoints:
-        - path: /odata/v4
-          port: 4004
-          protocol: http
-        - path: /api
-          port: 4004
-          protocol: http
-      protocols:
-        - odata-v4
-        - rest
-    requires:
-      - name: hdi-container
-        kind: platform-service
-        service: hana-cloud
-        plan: hdi-shared
-
-  - name: hdi-deployer
-    type: hdi-deployer
-    buildPath: .
-    requires:
-      - name: hdi-container
-        kind: platform-service
-        service: hana-cloud
-        plan: hdi-shared
-    custom:
-      lifecycle: init
 
 requires:
   - name: destination
@@ -65,3 +33,7 @@ custom:
   cap:
     env:
       OGS_DESTINATION: "OGS_S4"
+  notes: |
+    S/4HANA integration is handled directly via BTP Destination Service (OGS_S4).
+    Nominations are fetched on page load and every 30 minutes automatically.
+    n8n workflows are not required for this integration path.
