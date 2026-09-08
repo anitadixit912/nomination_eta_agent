@@ -4,52 +4,40 @@
  */
 import cds from '@sap/cds';
 import { callViaDestination } from './destination-helper.js';
+import { analyzeNomination } from './eta-analyzer.js';
 
 const LOG = cds.log('api-router');
 
-// Call the ETA Orchestrator Agent to analyse a nomination
-async function triggerEtaAgent(nomination) {
-  const agentUrl = process.env.NOMINATION_ETA_AGENT_URL;
-  if (!agentUrl) {
-    LOG.warn('NOMINATION_ETA_AGENT_URL not set — skipping AI ETA analysis');
-    return;
-  }
+// Store ETA proposal after AI analysis
+async function storeEtaProposal(nominationId, proposal) {
   try {
-    const { request } = await import('http');
-    const payload = JSON.stringify({
-      jsonrpc: '2.0', id: nomination.nominationId, method: 'tasks/send',
-      params: {
-        id: nomination.nominationId,
-        message: {
-          role: 'user',
-          parts: [{
-            type: 'text',
-            text: `Analyse ETA for nomination: nomination_id=${nomination.nominationId}, material=${nomination.material}, transport_system=${nomination.transportSystem}, origin=${nomination.origin}, destination=${nomination.destination}, vessel_id=${nomination.vesselMMSI}, vessel_name=${nomination.vesselName}. Return structured JSON ETA proposal.`
-          }]
-        }
-      }
+    const { NominationETA, ETAAuditLog } = cds.db.model.entities('eta');
+    const record = await SELECT.one.from(NominationETA).where({ nominationId });
+    if (!record) return;
+
+    await UPDATE(NominationETA, record.ID).with({
+      proposedETA: proposal.proposed_eta_utc,
+      confidence: proposal.confidence,
+      reasoning: proposal.reasoning,
+      status: 'proposed',
+      historicalData: proposal.supporting_evidence?.historical
+        ? JSON.stringify(proposal.supporting_evidence.historical) : null,
+      geoWeatherData: proposal.supporting_evidence?.geo_weather
+        ? JSON.stringify(proposal.supporting_evidence.geo_weather) : null
     });
-    const url = new URL('/a2a', agentUrl);
-    const options = {
-      hostname: url.hostname, port: url.port || 80,
-      path: url.pathname, method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }
-    };
-    await new Promise((resolve, reject) => {
-      const req = request(options, (res) => {
-        let data = '';
-        res.on('data', chunk => { data += chunk; });
-        res.on('end', () => {
-          LOG.info(`ETA agent triggered for ${nomination.nominationId}: ${res.statusCode}`);
-          resolve(data);
-        });
-      });
-      req.on('error', reject);
-      req.write(payload);
-      req.end();
+
+    await INSERT.into(ETAAuditLog).entries({
+      nominationId,
+      eventType: 'proposed',
+      etaValue: proposal.proposed_eta_utc,
+      decisionMaker: 'system',
+      agentReasoning: proposal.reasoning,
+      sourceAgents: 'sap-ai-core-llm'
     });
+
+    LOG.info(`ETA proposal stored for ${nominationId}: ${proposal.proposed_eta_utc}`);
   } catch (e) {
-    LOG.warn(`ETA agent call failed for ${nomination.nominationId}: ${e.message}`);
+    LOG.warn(`Failed to store ETA proposal for ${nominationId}: ${e.message}`);
   }
 }
 
@@ -214,8 +202,10 @@ export function registerApiRoutes(app) {
           };
           await INSERT.into(NominationETA).entries(newNom);
           created++;
-          // Trigger AI agent asynchronously — don't wait
-          triggerEtaAgent(newNom).catch(() => {});
+          // Trigger AI analysis asynchronously — don't wait
+          analyzeNomination(newNom).then(proposal => {
+            if (proposal) storeEtaProposal(nominationId, proposal);
+          }).catch(() => {});
         }
       }
 
