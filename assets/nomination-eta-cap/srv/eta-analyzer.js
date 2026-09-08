@@ -11,7 +11,24 @@ export async function analyzeNomination(nomination) {
     LOG.info(`Analyzing ETA for nomination: ${nomination.nominationId}`);
 
     // Call AI Core chat completions via destination
-    const response = await callViaDestination('aicore', '/v2/inference/deployments/latest/chat/completions', {
+    const response = await callViaDestination('aicore', '/v2/inference/deployments?scenarioId=foundation-models', {
+      method: 'GET',
+      headers: { 'AI-Resource-Group': 'default' }
+    });
+
+    // Find an active chat deployment
+    const deployments = response?.resources || [];
+    const chatDeployment = deployments.find(d =>
+      d.status === 'RUNNING' && (d.details?.resources?.backend_details?.model?.name?.includes('gpt') ||
+      d.details?.resources?.backend_details?.model?.name?.includes('claude') ||
+      d.details?.resources?.backend_details?.model?.name?.includes('llama'))
+    );
+    if (!chatDeployment) throw new Error('No running LLM deployment found in AI Core');
+
+    const deploymentId = chatDeployment.id;
+    LOG.info(`Using AI Core deployment: ${deploymentId} (${chatDeployment.details?.resources?.backend_details?.model?.name})`);
+
+    const chatResponse = await callViaDestination('aicore', `/v2/inference/deployments/${deploymentId}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +95,7 @@ Provide a realistic ETA estimate. The current date is ${new Date().toISOString()
       })
     });
 
-    const content = response?.choices?.[0]?.message?.content;
+    const content = chatResponse?.choices?.[0]?.message?.content;
     if (!content) throw new Error('No response from AI Core');
 
     // Parse JSON from response
