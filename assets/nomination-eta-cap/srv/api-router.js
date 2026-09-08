@@ -11,7 +11,7 @@ const LOG = cds.log('api-router');
 export async function _fetchFromS4() {
   const response = await callViaDestination(
     'OGS_S4',
-    '/sap/opu/odata/sap/OIL_TSW_NOMINAT_SRV/NominationSet?$filter=Status%20eq%20%27OPEN%27&$format=json'
+    '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/NominationSet?$filter=Status%20eq%20%27OPEN%27&$format=json'
   );
   return response?.d?.results || [];
 }
