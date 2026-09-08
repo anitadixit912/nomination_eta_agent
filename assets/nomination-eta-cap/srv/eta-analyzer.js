@@ -14,7 +14,7 @@ export async function analyzeNomination(nomination) {
     const model = process.env.AGENT_LLM_MODEL || 'gpt-4o';
 
     // First get list of deployments
-    const deploymentsResponse = await callViaDestination(destinationName, '/v2/inference/deployments', {
+    const deploymentsResponse = await callViaDestination(destinationName, '/v2/lm/deployments', {
       method: 'GET',
       headers: { 'AI-Resource-Group': 'default' }
     });

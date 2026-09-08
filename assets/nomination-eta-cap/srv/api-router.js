@@ -194,7 +194,7 @@ export function registerApiRoutes(app) {
       const results = {};
       for (const group of groups) {
         try {
-          const result = await callViaDestination('aicore', '/v2/inference/deployments', {
+          const result = await callViaDestination('aicore', '/v2/lm/deployments', {
             headers: { 'AI-Resource-Group': group }
           });
           results[group] = result;
