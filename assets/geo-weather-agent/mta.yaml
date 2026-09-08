@@ -9,11 +9,12 @@ modules:
     path: .
     parameters:
       buildpack: python_buildpack
-      memory: 512M
-      disk-quota: 1024M
+      memory: 1024M
+      disk-quota: 2048M
       instances: 1
-      command: python app/main.py --port $PORT
-
+      command: python app/main.py
+    properties:
+      AGENT_PUBLIC_URL: https://geo-weather-agent-new.cfapps.us10.hana.ondemand.com
     provides:
       - name: geo-weather-agent
         properties:
