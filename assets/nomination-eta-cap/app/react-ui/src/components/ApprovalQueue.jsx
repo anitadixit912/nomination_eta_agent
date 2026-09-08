@@ -47,7 +47,12 @@ export default function ApprovalQueue() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    // On page load: fetch from S/4HANA first, then load the list
+    fetch('/api/fetch-nominations', { method: 'POST' })
+      .then(() => load())
+      .catch(() => load()); // always load even if S/4 fetch fails
+  }, [load]);
 
   const openProposal = async (nom) => {
     try {
