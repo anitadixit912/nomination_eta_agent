@@ -137,7 +137,7 @@ export function registerApiRoutes(app) {
   // ── GET /api/s4-metadata ── TEMPORARY DEBUG ───────────────
   app.get('/api/s4-metadata', async (req, res) => {
     try {
-      const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/$metadata');
+      const result = await callViaDestination('OGS_S4', '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/$metadata', { headers: { 'Accept': 'application/xml' } });
       res.set('Content-Type', 'text/xml');
       res.send(typeof result === 'string' ? result : JSON.stringify(result));
     } catch (e) {

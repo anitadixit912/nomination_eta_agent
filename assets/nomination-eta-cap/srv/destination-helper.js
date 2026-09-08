@@ -74,7 +74,7 @@ export async function callViaDestination(destinationName, path, options = {}) {
   if (!baseUrl) throw new Error(`Destination '${destinationName}' has no URL`);
 
   const url = `${baseUrl}${path}`;
-  const headers = { 'Accept': 'application/json', ...(options.headers || {}) };
+  const headers = { ...(options.headers || {}), 'Accept': options.headers?.Accept || 'application/json' };
 
   // Basic Auth
   if (cfg?.Authentication === 'BasicAuthentication') {
