@@ -28,12 +28,13 @@ Analyze the nomination details and provide a realistic ETA estimate based on:
 - Material type and typical handling times
 - Industry standard transit times for the transport mode
 - Location information
+- Vehicle/vessel tracking estimates
 
 Respond ONLY with a valid JSON object in this exact format:
 {
   "proposed_eta_utc": "YYYY-MM-DDTHH:mm:ss",
   "confidence": "High|Medium|Low",
-  "reasoning": "Brief explanation of the ETA estimate",
+  "reasoning": "Detailed explanation of the ETA estimate including all factors considered",
   "supporting_evidence": {
     "historical": {
       "avg_lead_time_days": <number>,
@@ -41,6 +42,13 @@ Respond ONLY with a valid JSON object in this exact format:
       "max_days": <number>,
       "sample_size": <number>,
       "recent_trend": "stable|increasing|decreasing",
+      "confidence": "High|Medium|Low"
+    },
+    "ais": {
+      "remaining_distance_nm": <number>,
+      "sog_knots": <number>,
+      "vessel_status": "underway|at_anchor|moored|unknown",
+      "destination_mismatch": false,
       "confidence": "High|Medium|Low"
     },
     "geo_weather": {

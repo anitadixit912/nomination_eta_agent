@@ -131,6 +131,24 @@ export default function ApprovalQueue() {
     await load();
   };
 
+  const handleAnalyze = async (nom) => {
+    try {
+      const res = await fetch(`/api/nominations/${nom.nominationId}/analyze`, { method: 'POST' });
+      const data = await res.json();
+      if (data.error) {
+        alert(`AI analysis failed: ${data.error}`);
+      } else {
+        await load();
+        // Re-fetch fresh record and update dialog
+        const fresh = await fetch(`/odata/v4/nomination-eta/NominationETA?$filter=nominationId eq '${nom.nominationId}'`);
+        const freshData = await fresh.json();
+        if (freshData.value?.[0]) setSelected(freshData.value[0]);
+      }
+    } catch (e) {
+      alert('AI analysis failed');
+    }
+  };
+
   const handleFetchFromS4 = async () => {
     setLoading(true);
     try {
@@ -257,6 +275,16 @@ export default function ApprovalQueue() {
                       style={{ marginRight: '0.5rem' }}
                     >
                       {selected.status === 'written_back' ? 'Update Manual ETA' : 'Enter Manual ETA'}
+                    </Button>
+                  )}
+                  {!selected.proposedETA && (
+                    <Button
+                      icon="ai"
+                      design="Emphasized"
+                      onClick={() => handleAnalyze(selected)}
+                      style={{ marginRight: '0.5rem' }}
+                    >
+                      Analyze ETA with AI
                     </Button>
                   )}
                   <Button onClick={() => setShowProposal(false)}>Close</Button>

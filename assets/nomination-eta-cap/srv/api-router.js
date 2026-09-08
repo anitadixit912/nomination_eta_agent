@@ -22,6 +22,8 @@ async function storeEtaProposal(nominationId, proposal) {
       status: 'proposed',
       historicalData: proposal.supporting_evidence?.historical
         ? JSON.stringify(proposal.supporting_evidence.historical) : null,
+      aisData: proposal.supporting_evidence?.ais
+        ? JSON.stringify(proposal.supporting_evidence.ais) : null,
       geoWeatherData: proposal.supporting_evidence?.geo_weather
         ? JSON.stringify(proposal.supporting_evidence.geo_weather) : null
     });
@@ -164,6 +166,28 @@ export function registerApiRoutes(app) {
       LOG.info(`ETA refresh requested for nominationId=${nominationId}`);
       res.json({ status: 'refresh_triggered', nominationId });
     } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ── POST /api/nominations/:id/analyze ────────────────────
+  // Trigger AI ETA analysis for a specific nomination
+  app.post('/api/nominations/:id/analyze', async (req, res) => {
+    try {
+      const { NominationETA } = cds.db.model.entities('eta');
+      const nominationId = req.params.id;
+      const record = await SELECT.one.from(NominationETA).where({ nominationId });
+      if (!record) return res.status(404).json({ error: 'Nomination not found' });
+
+      const proposal = await analyzeNomination(record);
+      if (proposal) {
+        await storeEtaProposal(nominationId, proposal);
+        res.json({ status: 'analyzed', nominationId, eta: proposal.proposed_eta_utc });
+      } else {
+        res.status(500).json({ error: 'AI analysis failed' });
+      }
+    } catch (e) {
+      LOG.error('Analyze failed:', e.message);
       res.status(500).json({ error: e.message });
     }
   });
