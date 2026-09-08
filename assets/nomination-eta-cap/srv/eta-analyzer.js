@@ -34,7 +34,7 @@ export async function analyzeNomination(nomination) {
     const deploymentId = deployment.id;
     LOG.info(`Using deployment: ${deploymentId} (model: ${deployment.details?.resources?.backendDetails?.model?.name})`);
 
-    const chatResponse = await callViaDestination(destinationName, `/v2/inference/deployments/${deploymentId}/chat/completions`, {
+    const chatResponse = await callViaDestination(destinationName, `/v2/inference/deployments/${deploymentId}/v1/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
