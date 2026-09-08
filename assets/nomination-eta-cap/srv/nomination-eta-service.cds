@@ -4,7 +4,7 @@ service NominationETAService {
 
   // ── Main ETA proposals ────────────────────────────────────
   entity NominationETA as projection on eta.NominationETA
-    excluding { alternatives, historicalData, aisData, geoWeatherData };
+    excluding { alternatives, historicalData, aisData, geoWeatherData, rejectionReason };
 
   // Detail projection with all evidence fields (for proposal card)
   entity NominationETADetail as projection on eta.NominationETA;

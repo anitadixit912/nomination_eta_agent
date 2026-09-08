@@ -3,9 +3,9 @@
  * Resolves destination URL + auth token, then makes HTTP call
  */
 import https from 'https';
-import http from 'http';
 
-const LOG = cds.log ? cds.log('destination') : console;
+// Reusable HTTPS agent that tolerates self-signed certs on BTP
+const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 // Get destination service credentials from VCAP_SERVICES
 function getDestinationServiceCredentials() {
@@ -15,7 +15,7 @@ function getDestinationServiceCredentials() {
   return destService;
 }
 
-// Get XSUAA token for destination service
+// Get OAuth token for destination service
 async function getAccessToken(credentials) {
   const { clientid, clientsecret, url } = credentials;
   const tokenUrl = `${url}/oauth/token`;
@@ -24,7 +24,8 @@ async function getAccessToken(credentials) {
   const res = await fetch(tokenUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body
+    body,
+    agent: httpsAgent
   });
   const data = await res.json();
   if (!data.access_token) throw new Error(`Token fetch failed: ${JSON.stringify(data)}`);
@@ -36,11 +37,18 @@ async function getDestination(destinationName) {
   const creds = getDestinationServiceCredentials();
   const token = await getAccessToken(creds);
 
-  const res = await fetch(`${creds.uri}/destination-configuration/v1/destinations/${destinationName}`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
+  const res = await fetch(
+    `${creds.uri}/destination-configuration/v1/destinations/${destinationName}`,
+    {
+      headers: { 'Authorization': `Bearer ${token}` },
+      agent: httpsAgent
+    }
+  );
 
-  if (!res.ok) throw new Error(`Destination '${destinationName}' not found: ${res.status}`);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Destination '${destinationName}' lookup failed (${res.status}): ${text}`);
+  }
   return await res.json();
 }
 
@@ -48,11 +56,10 @@ async function getDestination(destinationName) {
 export async function callViaDestination(destinationName, path, options = {}) {
   const dest = await getDestination(destinationName);
   const baseUrl = dest.destinationConfiguration?.URL || dest.destinationConfiguration?.Url;
-  if (!baseUrl) throw new Error(`Destination '${destinationName}' has no URL`);
+  if (!baseUrl) throw new Error(`Destination '${destinationName}' has no URL configured`);
 
   const url = `${baseUrl}${path}`;
   const authType = dest.destinationConfiguration?.Authentication;
-
   const headers = { 'Accept': 'application/json', ...(options.headers || {}) };
 
   // Handle Basic Auth
@@ -62,17 +69,21 @@ export async function callViaDestination(destinationName, path, options = {}) {
     headers['Authorization'] = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
   }
 
-  // Handle OAuth
+  // Handle token-based auth (OAuth, Principal Propagation)
   if (dest.authTokens?.[0]?.value) {
-    headers['Authorization'] = `Bearer ${dest.authTokens[0].value}`;
+    headers['Authorization'] = `${dest.authTokens[0].type || 'Bearer'} ${dest.authTokens[0].value}`;
   }
 
   const res = await fetch(url, {
     method: options.method || 'GET',
     headers,
-    body: options.body
+    body: options.body,
+    agent: httpsAgent
   });
 
-  if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status} from ${url}: ${text.substring(0, 200)}`);
+  }
   return await res.json();
 }

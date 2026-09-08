@@ -3,8 +3,7 @@ import {
   Table, TableHeaderRow, TableHeaderCell, TableRow, TableCell,
   Tag, Button, BusyIndicator,
   Title, Dialog, Bar, Input, Label,
-  FlexBox, Card, CardHeader, Text,
-  DatePicker
+  FlexBox, Text
 } from '@ui5/webcomponents-react';
 import EtaProposalCard from './EtaProposalCard.jsx';
 import AlternativesPanel from './AlternativesPanel.jsx';
@@ -95,19 +94,30 @@ export default function ApprovalQueue() {
   };
 
   const handleManualOverride = async () => {
-    await fetch(`${SERVICE}/manualOverrideETA`, {
+    if (!manualEta) { alert('Please select a date'); return; }
+    const isoDate = new Date(manualEta + 'T12:00:00Z').toISOString();
+    if (!isoDate || isoDate === 'Invalid Date') { alert('Invalid date. Use YYYY-MM-DD format.'); return; }
+
+    const res = await fetch(`${SERVICE}/manualOverrideETA`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nominationId: selected.nominationId,
-        manualETA: new Date(manualEta).toISOString(),
+        manualETA: isoDate,
         decisionMaker: 'supervisor'
       })
     });
+    if (!res.ok) { alert('Failed to save manual ETA'); return; }
     setManualDialog(false);
     setManualEta('');
     await load();
-    setShowProposal(false);
+    // Re-fetch fresh record and reopen dialog to show saved ETA
+    const fresh = await fetch(`${SERVICE}/NominationETA?$filter=nominationId eq '${selected.nominationId}'`);
+    const freshData = await fresh.json();
+    if (freshData.value?.[0]) {
+      setSelected(freshData.value[0]);
+      setShowProposal(true);
+    }
   };
 
   const handleRefresh = async (nom) => {
@@ -313,9 +323,12 @@ export default function ApprovalQueue() {
         >
           <FlexBox direction="Column" style={{ padding: '1rem', gap: '0.5rem' }}>
             <Label>Manual ETA Date</Label>
-            <DatePicker
-              onChange={(e) => setManualEta(e.detail.value)}
-              style={{ width: '100%' }}
+            <input
+              type="date"
+              value={manualEta}
+              onChange={(e) => setManualEta(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+              style={{ width: '100%', padding: '0.5rem', fontSize: '1rem', border: '1px solid #ccc', borderRadius: '4px' }}
             />
           </FlexBox>
         </Dialog>
