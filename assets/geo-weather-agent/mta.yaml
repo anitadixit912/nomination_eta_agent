@@ -10,7 +10,7 @@ modules:
     parameters:
       buildpack: python_buildpack
       memory: 256M
-      disk-quota: 2048M
+      disk-quota: 1024M
       instances: 1
       command: python app/main.py
     properties:
