@@ -11,7 +11,7 @@ export async function analyzeNomination(nomination) {
     LOG.info(`Analyzing ETA for nomination: ${nomination.nominationId}`);
 
     // Call AI Core chat completions via destination
-    const response = await callViaDestination('aicore', '/v2/inference/deployments?scenarioId=foundation-models', {
+    const response = await callViaDestination('aicore', '/v2/inference/deployments', {
       method: 'GET',
       headers: { 'AI-Resource-Group': 'default' }
     });

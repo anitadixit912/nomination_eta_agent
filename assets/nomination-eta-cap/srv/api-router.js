@@ -173,7 +173,7 @@ export function registerApiRoutes(app) {
   // ── GET /api/aicore-deployments ── TEMPORARY DEBUG ────────
   app.get('/api/aicore-deployments', async (req, res) => {
     try {
-      const result = await callViaDestination('aicore', '/v2/inference/deployments?scenarioId=foundation-models', {
+      const result = await callViaDestination('aicore', '/v2/inference/deployments', {
         headers: { 'AI-Resource-Group': 'default' }
       });
       res.json(result);
