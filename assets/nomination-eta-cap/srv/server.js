@@ -12,18 +12,18 @@ async function fetchNominationsFromS4() {
     LOG.info(`Fetched ${nominations.length} open nominations from S/4HANA`);
     const { NominationETA } = cds.db.model.entities('eta');
     for (const n of nominations) {
-      const nominationId = n.NominationID || n.Nomination || n.ID;
-      if (!nominationId) continue;
+      const nominationId = `${n.NominationDoc}-${n.NominationDocItem}`;
+      if (!n.NominationDoc) continue;
       const existing = await SELECT.one.from(NominationETA).where({ nominationId });
       if (!existing) {
         await INSERT.into(NominationETA).entries({
           nominationId,
-          material: n.Material || n.MaterialDescription || '',
-          transportSystem: n.TransportationSystem || n.TranspSystem || '',
-          origin: n.LoadingLocation || n.OriginLocation || '',
-          destination: n.DischargeLocation || n.DestinationLocation || '',
-          vesselMMSI: n.VesselMMSI || n.Vessel || '',
-          vesselName: n.VesselName || '',
+          material: n.MaterialDesc || n.ScheduledMaterial || '',
+          transportSystem: n.TransportSystem || '',
+          origin: n.LocationId || '',
+          destination: n.LocationName || '',
+          vesselMMSI: n.VehicleId || '',
+          vesselName: n.VehicleDescription || '',
           status: 'proposed'
         });
         LOG.info(`Created nomination: ${nominationId}`);

@@ -11,7 +11,7 @@ const LOG = cds.log('api-router');
 export async function _fetchFromS4() {
   const response = await callViaDestination(
     'OGS_S4',
-    '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/C_Oij06_MyNominations?$format=json&$top=100'
+    '/sap/opu/odata/sap/TSW_MYNOMINATIONS_SRV_01/C_Oij06_MyNominations?$format=json&$top=100&$select=NominationDoc,NominationDocItem,NominationExtNumber,MaterialDesc,ScheduledMaterial,TransportSystem,OriginCityCode,DestinationCityCode,VehicleId,VehicleDescription,NominationHeaderStatus,NominationScheduleDate'
   );
   return response?.d?.results || [];
 }
@@ -164,18 +164,25 @@ export function registerApiRoutes(app) {
       let created = 0;
 
       for (const n of nominations) {
-        const nominationId = n.NominationID || n.Nomination || n.ID;
-        if (!nominationId) continue;
+        // Unique ID: NominationDoc-NominationDocItem (e.g. "1-10")
+        const nominationId = `${n.NominationDoc}-${n.NominationDocItem}`;
+        if (!n.NominationDoc) continue;
         const existing = await SELECT.one.from(NominationETA).where({ nominationId });
         if (!existing) {
+          // Parse OData date format: /Date(timestamp)/
+          const parseODataDate = (d) => {
+            if (!d) return null;
+            const m = String(d).match(/\/Date\((\d+)/);
+            return m ? new Date(parseInt(m[1])).toISOString() : null;
+          };
           await INSERT.into(NominationETA).entries({
             nominationId,
-            material: n.Material || n.MaterialDescription || '',
-            transportSystem: n.TransportationSystem || n.TranspSystem || '',
-            origin: n.LoadingLocation || n.OriginLocation || '',
-            destination: n.DischargeLocation || n.DestinationLocation || '',
-            vesselMMSI: n.VesselMMSI || n.Vessel || '',
-            vesselName: n.VesselName || '',
+            material: n.MaterialDesc || n.ScheduledMaterial || '',
+            transportSystem: n.TransportSystem || '',
+            origin: n.LocationId || '',
+            destination: n.LocationName || '',
+            vesselMMSI: n.VehicleId || '',
+            vesselName: n.VehicleDescription || '',
             status: 'proposed'
           });
           created++;
