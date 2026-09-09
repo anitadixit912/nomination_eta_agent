@@ -208,6 +208,35 @@ export function registerApiRoutes(app) {
     }
   });
 
+  // ── POST /api/nominations/create ─────────────────────────
+  // Called by UI to manually create a new nomination and trigger AI analysis
+  app.post('/api/nominations/create', async (req, res) => {
+    try {
+      const { NominationETA } = cds.db.model.entities('eta');
+      const { nominationId, material, transportSystem, origin, destination, vesselName } = req.body;
+
+      if (!nominationId || !material || !origin || !destination)
+        return res.status(400).json({ error: 'nominationId, material, origin and destination are required' });
+
+      const existing = await SELECT.one.from(NominationETA).where({ nominationId });
+      if (existing) return res.status(409).json({ error: `Nomination ${nominationId} already exists` });
+
+      const newNom = { nominationId, material, transportSystem: transportSystem || '', origin, destination, vesselName: vesselName || '', status: 'proposed' };
+      await INSERT.into(NominationETA).entries(newNom);
+      LOG.info(`Nomination created manually: ${nominationId}`);
+
+      // Trigger AI analysis in background
+      analyzeNomination(newNom).then(proposal => {
+        if (proposal) storeEtaProposal(nominationId, proposal);
+      }).catch(e => LOG.warn(`AI analysis failed for ${nominationId}: ${e.message}`));
+
+      res.status(201).json({ status: 'created', nominationId });
+    } catch (e) {
+      LOG.error('Create nomination failed:', e.message);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // ── POST /api/nominations/:id/analyze ────────────────────
   // Trigger AI ETA analysis for a specific nomination
   app.post('/api/nominations/:id/analyze', async (req, res) => {
@@ -226,6 +255,28 @@ export function registerApiRoutes(app) {
       }
     } catch (e) {
       LOG.error('Analyze failed:', e.message);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // ── POST /api/analyze-all ─────────────────────────────────
+  // Trigger AI analysis for all nominations without ETA
+  app.post('/api/analyze-all', async (req, res) => {
+    try {
+      const { NominationETA } = cds.db.model.entities('eta');
+      const records = await SELECT.from(NominationETA).where({ proposedETA: null });
+      LOG.info(`Analyzing ${records.length} nominations without ETA...`);
+      res.json({ status: 'triggered', count: records.length });
+      // Run in background
+      for (const record of records) {
+        try {
+          const proposal = await analyzeNomination(record);
+          if (proposal) await storeEtaProposal(record.nominationId, proposal);
+        } catch (e) {
+          LOG.warn(`Batch analyze failed for ${record.nominationId}: ${e.message}`);
+        }
+      }
+    } catch (e) {
       res.status(500).json({ error: e.message });
     }
   });

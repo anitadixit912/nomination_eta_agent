@@ -33,6 +33,9 @@ export default function ApprovalQueue() {
   const [rejectReason, setRejectReason] = useState('');
   const [manualDialog, setManualDialog] = useState(false);
   const [manualEta, setManualEta] = useState('');
+  const [createDialog, setCreateDialog] = useState(false);
+  const [createForm, setCreateForm] = useState({ nominationId: '', material: '', transportSystem: '', origin: '', destination: '', vesselName: '' });
+  const [creating, setCreating] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -180,12 +183,39 @@ export default function ApprovalQueue() {
     await load();
   };
 
+  const handleCreate = async () => {
+    const { nominationId, material, transportSystem, origin, destination, vesselName } = createForm;
+    if (!nominationId || !material || !origin || !destination) {
+      alert('Please fill in all required fields (Nomination ID, Material, Origin, Destination)');
+      return;
+    }
+    setCreating(true);
+    try {
+      const res = await fetch('/api/nominations/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nominationId, material, transportSystem, origin, destination, vesselName })
+      });
+      const data = await res.json();
+      if (data.error) { alert(`Failed: ${data.error}`); return; }
+      setCreateDialog(false);
+      setCreateForm({ nominationId: '', material: '', transportSystem: '', origin: '', destination: '', vesselName: '' });
+      await load();
+      alert(`Nomination ${nominationId} created! AI is analyzing ETA in the background — refresh in a moment.`);
+    } catch (e) {
+      alert('Failed to create nomination');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <div>
       <FlexBox justifyContent="SpaceBetween" alignItems="Center" style={{ marginBottom: '1rem' }}>
         <Title level="H3">Nomination ETA Approval Queue</Title>
         <FlexBox style={{ gap: '0.5rem' }}>
-          <Button icon="download-from-cloud" design="Emphasized" onClick={handleFetchFromS4}>Fetch from S/4HANA</Button>
+          <Button icon="add" design="Emphasized" onClick={() => setCreateDialog(true)}>Create Nomination</Button>
+          <Button icon="download-from-cloud" onClick={handleFetchFromS4}>Fetch from S/4HANA</Button>
           <Button icon="refresh" onClick={load}>Refresh</Button>
         </FlexBox>
       </FlexBox>
@@ -332,6 +362,55 @@ export default function ApprovalQueue() {
               placeholder="e.g. AIS data unavailable, cannot trust estimate"
               style={{ width: '100%' }}
             />
+          </FlexBox>
+        </Dialog>
+      )}
+
+      {/* Create Nomination Dialog */}
+      {createDialog && (
+        <Dialog
+          open
+          headerText="Create New Nomination"
+          style={{ width: '500px' }}
+          footer={
+            <Bar
+              endContent={
+                <FlexBox>
+                  <Button design="Emphasized" onClick={handleCreate} disabled={creating} style={{ marginRight: '0.5rem' }}>
+                    {creating ? 'Creating...' : 'Create & Analyze ETA'}
+                  </Button>
+                  <Button onClick={() => setCreateDialog(false)}>Cancel</Button>
+                </FlexBox>
+              }
+            />
+          }
+          onAfterClose={() => setCreateDialog(false)}
+        >
+          <FlexBox direction="Column" style={{ padding: '1rem', gap: '0.75rem' }}>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label required>Nomination ID</Label>
+              <Input value={createForm.nominationId} onInput={e => setCreateForm(f => ({ ...f, nominationId: e.target.value }))} placeholder="e.g. NOM-2026-001" style={{ width: '100%' }} />
+            </FlexBox>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label required>Material</Label>
+              <Input value={createForm.material} onInput={e => setCreateForm(f => ({ ...f, material: e.target.value }))} placeholder="e.g. Crude Oil" style={{ width: '100%' }} />
+            </FlexBox>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label>Transport System</Label>
+              <Input value={createForm.transportSystem} onInput={e => setCreateForm(f => ({ ...f, transportSystem: e.target.value }))} placeholder="e.g. PIPELINE-01" style={{ width: '100%' }} />
+            </FlexBox>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label required>Origin</Label>
+              <Input value={createForm.origin} onInput={e => setCreateForm(f => ({ ...f, origin: e.target.value }))} placeholder="e.g. Singapore" style={{ width: '100%' }} />
+            </FlexBox>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label required>Destination</Label>
+              <Input value={createForm.destination} onInput={e => setCreateForm(f => ({ ...f, destination: e.target.value }))} placeholder="e.g. Rotterdam" style={{ width: '100%' }} />
+            </FlexBox>
+            <FlexBox direction="Column" style={{ gap: '0.25rem' }}>
+              <Label>Vessel Name</Label>
+              <Input value={createForm.vesselName} onInput={e => setCreateForm(f => ({ ...f, vesselName: e.target.value }))} placeholder="e.g. MV Pacific Star" style={{ width: '100%' }} />
+            </FlexBox>
           </FlexBox>
         </Dialog>
       )}
